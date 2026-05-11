@@ -388,8 +388,8 @@ const certificateImages: Certificate[] = [
 .page-cover {
   display: grid;
   grid-template-columns: 42% 58%;
-  grid-template-rows: minmax(232mm, auto) 1fr;
-  padding: 18mm 16mm 14mm;
+  grid-template-rows: auto 1fr;
+  padding: 15mm 16mm 12mm;
   column-gap: 14mm;
 }
 
@@ -424,9 +424,9 @@ const certificateImages: Certificate[] = [
 }
 
 .portrait-frame {
-  width: 58mm;
-  height: 58mm;
-  margin: -2mm auto 7mm;
+  width: 54mm;
+  height: 54mm;
+  margin: -1mm auto 6mm;
   overflow: hidden;
   border: 1.6mm solid var(--resume-teal);
   border-radius: 999px;
@@ -443,34 +443,34 @@ const certificateImages: Certificate[] = [
 .profile-panel h1 {
   margin: 0 0 2mm;
   text-align: center;
-  font-size: 27pt;
+  font-size: 25pt;
   font-weight: 900;
   line-height: 1.05;
 }
 
 .headline {
-  margin: 0 0 6mm;
+  margin: 0 0 5mm;
   color: var(--resume-teal);
-  font-size: 14.5pt;
+  font-size: 13.4pt;
   font-weight: 900;
   line-height: 1.28;
 }
 
 .summary {
-  margin: 0 0 6mm;
-  font-size: 12.2pt;
+  margin: 0 0 5mm;
+  font-size: 11.2pt;
   font-weight: 500;
-  line-height: 1.38;
+  line-height: 1.28;
   text-align: justify;
 }
 
 .contact-list {
   display: grid;
-  gap: 3.8mm;
+  gap: 3mm;
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 12.2pt;
+  font-size: 11.3pt;
 }
 
 .contact-list li {
@@ -493,7 +493,7 @@ const certificateImages: Certificate[] = [
 }
 
 .skill-block + .skill-block {
-  margin-top: 14mm;
+  margin-top: 8mm;
 }
 
 .skill-block h2,
@@ -503,8 +503,8 @@ const certificateImages: Certificate[] = [
   align-items: center;
   gap: 4mm;
   min-width: 58mm;
-  margin: 0 0 7mm;
-  padding: 2.4mm 6mm;
+  margin: 0 0 5mm;
+  padding: 2.2mm 6mm;
   color: #fff;
   background: var(--resume-green);
   font-size: 13.5pt;
@@ -540,9 +540,9 @@ const certificateImages: Certificate[] = [
 }
 
 .skill-block li {
-  margin-bottom: 3mm;
-  font-size: 12.4pt;
-  line-height: 1.42;
+  margin-bottom: 1.8mm;
+  font-size: 11.4pt;
+  line-height: 1.25;
 }
 
 .skill-block li:first-child,
@@ -565,9 +565,9 @@ const certificateImages: Certificate[] = [
 }
 
 .influence-block li {
-  margin-bottom: 2.8mm;
-  font-size: 11.5pt;
-  line-height: 1.5;
+  margin-bottom: 1.5mm;
+  font-size: 9.8pt;
+  line-height: 1.26;
 }
 
 .page-work,
@@ -663,8 +663,8 @@ const certificateImages: Certificate[] = [
 
 .certificate-grid {
   display: grid;
-  grid-template-columns: 1fr 0.55fr;
-  gap: 7mm 8mm;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4.5mm 6mm;
   align-items: start;
 }
 
@@ -676,7 +676,7 @@ const certificateImages: Certificate[] = [
 
 .certificate-grid img {
   width: 100%;
-  max-height: 78mm;
+  max-height: 62mm;
   object-fit: contain;
 }
 
@@ -694,7 +694,7 @@ const certificateImages: Certificate[] = [
 }
 
 .certificate-grid figure:nth-child(n + 3):not(.wide) img {
-  max-height: 82mm;
+  max-height: 68mm;
 }
 
 .certificate-grid .wide {
@@ -702,7 +702,7 @@ const certificateImages: Certificate[] = [
 }
 
 .certificate-grid .cover img {
-  max-height: 72mm;
+  max-height: 58mm;
 }
 
 .certificate-grid figure:nth-child(3) {
@@ -714,7 +714,7 @@ const certificateImages: Certificate[] = [
 }
 
 .certificate-grid figure:nth-child(5) {
-  grid-column: 1 / 2;
+  grid-column: 3 / 4;
 }
 
 .certificate-grid figure:nth-child(6) {
@@ -722,7 +722,7 @@ const certificateImages: Certificate[] = [
 }
 
 .certificate-grid figure:nth-child(6) img {
-  max-height: 55mm;
+  max-height: 46mm;
 }
 
 .page-number {
@@ -770,21 +770,45 @@ const certificateImages: Certificate[] = [
     background: #fff;
   }
 
+  :global(.app-root) {
+    min-height: auto;
+    padding: 0 !important;
+  }
+
   .print-button {
     display: none;
   }
 
   .page {
     width: 210mm;
-    min-height: 297mm;
+    height: 296mm;
+    min-height: 296mm;
     margin: 0;
     box-shadow: none;
     overflow: hidden;
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  .page-cover {
+    display: grid;
+    grid-template-columns: 42% 58%;
+    grid-template-rows: auto 1fr;
+    row-gap: 0;
+  }
+
+  .influence-block {
+    grid-column: 1 / -1;
   }
 
   .page:last-child {
     page-break-after: auto;
     break-after: auto;
+  }
+
+  .page-certificates {
+    page-break-after: auto !important;
+    break-after: auto !important;
   }
 }
 </style>
