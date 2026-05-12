@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import pptManifest from '@/config/ppt-manifest.json'
+
 type SkillGroup = {
   icon: string
   title: string
@@ -18,6 +21,28 @@ type Certificate = {
   src: string
   className?: string
 }
+
+const pptIcons = computed(() => pptManifest.icons)
+
+function iconSrc(name: string | null | undefined): string {
+  if (!name) return ''
+  return `/ppt-assets/${name}`
+}
+
+function contactIconAt(index: number): string {
+  const list = pptIcons.value.contact
+  return iconSrc(list?.[index])
+}
+
+function skillIconAt(index: number): string {
+  const list = pptIcons.value.skillSections
+  return iconSrc(list?.[index])
+}
+
+const influenceIconSrc = computed(() => iconSrc(pptIcons.value.influence))
+const headerWorkSrc = computed(() => iconSrc(pptIcons.value.headerWorkTeal))
+const headerEarlySrc = computed(() => iconSrc(pptIcons.value.headerEarlyPurple))
+const headerCertSrc = computed(() => iconSrc(pptIcons.value.headerCertPurple))
 
 const contactItems = [
   { icon: '☎', text: '+86 158 1115 0519' },
@@ -211,16 +236,28 @@ const certificateImages: Certificate[] = [
         </p>
 
         <ul class="contact-list">
-          <li v-for="item in contactItems" :key="item.text">
-            <span class="contact-icon">{{ item.icon }}</span>
+          <li v-for="(item, ci) in contactItems" :key="item.text">
+            <span class="contact-icon">
+              <img v-if="contactIconAt(ci)" class="contact-icon-img" :src="contactIconAt(ci)" alt="" />
+              <span v-else class="contact-fallback">{{ item.icon }}</span>
+            </span>
             <span>{{ item.text }}</span>
           </li>
         </ul>
       </aside>
 
       <main class="cover-main">
-        <section v-for="group in skillGroups" :key="group.title" class="skill-block">
-          <h2><span>{{ group.icon }}</span>{{ group.title }}</h2>
+        <section v-for="(group, gi) in skillGroups" :key="group.title" class="skill-block">
+          <h2>
+            <img
+              v-if="skillIconAt(gi)"
+              class="skill-heading-icon"
+              :src="skillIconAt(gi)"
+              alt=""
+            />
+            <span v-else class="skill-heading-fallback">{{ group.icon }}</span>
+            {{ group.title }}
+          </h2>
           <ul>
             <li v-for="item in group.items" :key="item">{{ item }}</li>
           </ul>
@@ -228,7 +265,11 @@ const certificateImages: Certificate[] = [
       </main>
 
       <section class="influence-block">
-        <h2><span>⚑</span>影响力</h2>
+        <h2>
+          <img v-if="influenceIconSrc" class="skill-heading-icon" :src="influenceIconSrc" alt="" />
+          <span v-else class="skill-heading-fallback">⚑</span>
+          影响力
+        </h2>
         <ul>
           <li v-for="item in influenceItems" :key="item">{{ item }}</li>
         </ul>
@@ -238,7 +279,13 @@ const certificateImages: Certificate[] = [
 
     <section class="page page-work">
       <div class="decor decor-top" />
-      <header class="page-header teal"><span class="header-icon">♟</span><span>Inspire（前 Thoughtworks 中国区）工作经历</span></header>
+      <header class="page-header teal">
+        <span class="header-icon">
+          <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+          <span v-else>♟</span>
+        </span>
+        <span>Inspire（前 Thoughtworks 中国区）工作经历</span>
+      </header>
       <article v-for="item in workExperiences.slice(0, 5)" :key="item.title" class="experience-item">
         <h3>{{ item.title }}</h3>
         <p class="meta">{{ item.period }}</p>
@@ -253,7 +300,13 @@ const certificateImages: Certificate[] = [
 
     <section class="page page-work">
       <div class="decor decor-top" />
-      <header class="page-header teal"><span class="header-icon">♟</span><span>Inspire（前 Thoughtworks 中国区）工作经历</span></header>
+      <header class="page-header teal">
+        <span class="header-icon">
+          <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+          <span v-else>♟</span>
+        </span>
+        <span>Inspire（前 Thoughtworks 中国区）工作经历</span>
+      </header>
       <article v-for="item in workExperiences.slice(5, 9)" :key="item.title" class="experience-item">
         <h3>{{ item.title }}</h3>
         <p class="meta">{{ item.period }}</p>
@@ -268,7 +321,13 @@ const certificateImages: Certificate[] = [
 
     <section class="page page-work compact">
       <div class="decor decor-top" />
-      <header class="page-header teal"><span class="header-icon">♟</span><span>Inspire（前 Thoughtworks 中国区）工作经历</span></header>
+      <header class="page-header teal">
+        <span class="header-icon">
+          <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+          <span v-else>♟</span>
+        </span>
+        <span>Inspire（前 Thoughtworks 中国区）工作经历</span>
+      </header>
       <article v-for="item in workExperiences.slice(9, 12)" :key="item.title" class="experience-item">
         <h3>{{ item.title }}</h3>
         <p class="meta">{{ item.period }}</p>
@@ -283,7 +342,13 @@ const certificateImages: Certificate[] = [
 
     <section class="page page-work compact">
       <div class="decor decor-top" />
-      <header class="page-header teal"><span class="header-icon">♟</span><span>Inspire（前 Thoughtworks 中国区）工作经历</span></header>
+      <header class="page-header teal">
+        <span class="header-icon">
+          <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+          <span v-else>♟</span>
+        </span>
+        <span>Inspire（前 Thoughtworks 中国区）工作经历</span>
+      </header>
       <article v-for="item in workExperiences.slice(12)" :key="item.title" class="experience-item">
         <h3>{{ item.title }}</h3>
         <p class="meta">{{ item.period }}</p>
@@ -298,7 +363,13 @@ const certificateImages: Certificate[] = [
 
     <section class="page page-work compact">
       <div class="decor decor-top" />
-      <header class="page-header purple"><span class="header-icon">♟</span><span>早期工作经历</span></header>
+      <header class="page-header purple">
+        <span class="header-icon">
+          <img v-if="headerEarlySrc" class="header-icon-img" :src="headerEarlySrc" alt="" />
+          <span v-else>♟</span>
+        </span>
+        <span>早期工作经历</span>
+      </header>
       <article v-for="item in earlyExperiences" :key="item.title" class="experience-item">
         <h3>{{ item.title }}</h3>
         <p class="meta">{{ item.period }}</p>
@@ -314,7 +385,13 @@ const certificateImages: Certificate[] = [
     <section class="page page-certificates">
       <div class="decor decor-top" />
       <div class="decor decor-left" />
-      <header class="page-header purple"><span class="header-icon">♙</span><span>证书</span></header>
+      <header class="page-header purple">
+        <span class="header-icon">
+          <img v-if="headerCertSrc" class="header-icon-img" :src="headerCertSrc" alt="" />
+          <span v-else>♙</span>
+        </span>
+        <span>证书</span>
+      </header>
       <div class="certificate-grid">
         <figure v-for="certificate in certificateImages" :key="certificate.src" :class="certificate.className">
           <img :src="certificate.src" :alt="certificate.title" />
@@ -490,6 +567,37 @@ const certificateImages: Certificate[] = [
   background: var(--resume-teal);
   font-size: 10pt;
   font-weight: 700;
+  overflow: hidden;
+}
+
+.contact-icon-img {
+  width: 68%;
+  height: 68%;
+  object-fit: contain;
+}
+
+.contact-fallback {
+  font-size: 10pt;
+  line-height: 1;
+}
+
+.skill-heading-icon {
+  width: 1.15em;
+  height: 1.15em;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.skill-heading-fallback {
+  display: inline-block;
+  min-width: 1em;
+}
+
+.page-header .header-icon img.header-icon-img {
+  width: 1em;
+  height: 1em;
+  object-fit: contain;
+  display: block;
 }
 
 .skill-block + .skill-block {

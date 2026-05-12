@@ -1,0 +1,14 @@
+{
+  "icons": {
+    "contact": [
+      "icon-contact-phone.svg",
+      "icon-contact-email.svg",
+      "icon-contact-wechat.svg"
+    ],
+    "skillSections": ["icon-skill-consult.svg", "icon-skill-basic.svg"],
+    "influence": "icon-influence.svg",
+    "headerWorkTeal": "icon-header-work.svg",
+    "headerEarlyPurple": "icon-header-early.svg",
+    "headerCertPurple": "icon-header-cert.svg"
+  }
+}
