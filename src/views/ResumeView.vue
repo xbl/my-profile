@@ -1,47 +1,47 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import pptManifest from '@/config/ppt-manifest.json'
-import { resume } from '@/data/resume'
+import { computed } from "vue";
+import pptManifest from "@/config/ppt-manifest.json";
+import { resume } from "@/data/resume";
 
-const pptIcons = computed(() => pptManifest.icons)
+const pptIcons = computed(() => pptManifest.icons);
 
 function iconSrc(name: string | null | undefined): string {
-  if (!name) return ''
-  return `/ppt-assets/${name}`
+  if (!name) return "";
+  return `/ppt-assets/${name}`;
 }
 
 function contactIconAt(index: number): string {
-  const list = pptIcons.value.contact
-  return iconSrc(list?.[index])
+  const list = pptIcons.value.contact;
+  return iconSrc(list?.[index]);
 }
 
 function skillIconAt(index: number): string {
-  const list = pptIcons.value.skillSections
-  return iconSrc(list?.[index])
+  const list = pptIcons.value.skillSections;
+  return iconSrc(list?.[index]);
 }
 
-const influenceIconSrc = computed(() => iconSrc(pptIcons.value.influence))
-const headerWorkSrc = computed(() => iconSrc(pptIcons.value.headerWorkTeal))
-const headerEarlySrc = computed(() => iconSrc(pptIcons.value.headerEarlyPurple))
-const headerCertSrc = computed(() => iconSrc(pptIcons.value.headerCertPurple))
+const influenceIconSrc = computed(() => iconSrc(pptIcons.value.influence));
+const headerWorkSrc = computed(() => iconSrc(pptIcons.value.headerWorkTeal));
+const headerEarlySrc = computed(() => iconSrc(pptIcons.value.headerEarlyPurple));
+const headerCertSrc = computed(() => iconSrc(pptIcons.value.headerCertPurple));
 
 /** 无 PPT 图标资源时的占位（与 `public/ppt-assets` + `ppt-manifest` 对应顺序一致） */
-const CONTACT_FALLBACK_ICONS = ['☎', '✉', '✹'] as const
-const SKILL_HEADING_FALLBACK_ICONS = ['▣', '✣'] as const
+const CONTACT_FALLBACK_ICONS = ["☎", "✉", "✹"] as const;
+const SKILL_HEADING_FALLBACK_ICONS = ["▣", "✣"] as const;
 
 function contactFallbackAt(index: number): string {
-  return CONTACT_FALLBACK_ICONS[index] ?? '•'
+  return CONTACT_FALLBACK_ICONS[index] ?? "•";
 }
 
 function skillHeadingFallbackAt(index: number): string {
-  return SKILL_HEADING_FALLBACK_ICONS[index] ?? '◆'
+  return SKILL_HEADING_FALLBACK_ICONS[index] ?? "◆";
 }
 
 function isExternalHttpHref(href: string): boolean {
-  return href.startsWith('http://') || href.startsWith('https://')
+  return href.startsWith("http://") || href.startsWith("https://");
 }
 
-const printResume = () => window.print()
+const printResume = () => window.print();
 </script>
 
 <template>
@@ -72,7 +72,12 @@ const printResume = () => window.print()
         <ul class="contact-list">
           <li v-for="(item, ci) in resume.contactItems" :key="item.text">
             <span class="contact-icon">
-              <img v-if="contactIconAt(ci)" class="contact-icon-img" :src="contactIconAt(ci)" alt="" />
+              <img
+                v-if="contactIconAt(ci)"
+                class="contact-icon-img"
+                :src="contactIconAt(ci)"
+                alt=""
+              />
               <span v-else class="contact-fallback">{{ contactFallbackAt(ci) }}</span>
             </span>
             <span class="contact-text">
@@ -82,7 +87,8 @@ const printResume = () => window.print()
                 class="contact-link"
                 :target="isExternalHttpHref(item.href) ? '_blank' : undefined"
                 :rel="isExternalHttpHref(item.href) ? 'noopener noreferrer' : undefined"
-              >{{ item.text }}</a>
+                >{{ item.text }}</a
+              >
               <template v-else>{{ item.text }}</template>
             </span>
           </li>
@@ -92,12 +98,7 @@ const printResume = () => window.print()
       <main class="cover-main">
         <section v-for="(group, gi) in resume.skillGroups" :key="group.title" class="skill-block">
           <h2>
-            <img
-              v-if="skillIconAt(gi)"
-              class="skill-heading-icon"
-              :src="skillIconAt(gi)"
-              alt=""
-            />
+            <img v-if="skillIconAt(gi)" class="skill-heading-icon" :src="skillIconAt(gi)" alt="" />
             <span v-else class="skill-heading-fallback">{{ skillHeadingFallbackAt(gi) }}</span>
             {{ group.title }}
           </h2>
@@ -117,6 +118,7 @@ const printResume = () => window.print()
           <li v-for="item in resume.influenceItems" :key="item">{{ item }}</li>
         </ul>
       </section>
+
       <span class="page-number">1</span>
     </section>
 
@@ -129,7 +131,11 @@ const printResume = () => window.print()
         </span>
         <span>{{ resume.workSectionTitle }}</span>
       </header>
-      <article v-for="item in resume.workExperiences.slice(0, 5)" :key="item.title" class="experience-item">
+      <article
+        v-for="item in resume.workExperiences.slice(0, 5)"
+        :key="item.title"
+        class="experience-item"
+      >
         <h3>{{ item.title }}</h3>
         <p class="meta">{{ item.period }}</p>
         <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
@@ -150,7 +156,11 @@ const printResume = () => window.print()
         </span>
         <span>{{ resume.workSectionTitle }}</span>
       </header>
-      <article v-for="item in resume.workExperiences.slice(5, 9)" :key="item.title" class="experience-item">
+      <article
+        v-for="item in resume.workExperiences.slice(5, 9)"
+        :key="item.title"
+        class="experience-item"
+      >
         <h3>{{ item.title }}</h3>
         <p class="meta">{{ item.period }}</p>
         <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
@@ -171,7 +181,11 @@ const printResume = () => window.print()
         </span>
         <span>{{ resume.workSectionTitle }}</span>
       </header>
-      <article v-for="item in resume.workExperiences.slice(9, 12)" :key="item.title" class="experience-item">
+      <article
+        v-for="item in resume.workExperiences.slice(9, 12)"
+        :key="item.title"
+        class="experience-item"
+      >
         <h3>{{ item.title }}</h3>
         <p class="meta">{{ item.period }}</p>
         <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
@@ -192,7 +206,11 @@ const printResume = () => window.print()
         </span>
         <span>{{ resume.workSectionTitle }}</span>
       </header>
-      <article v-for="item in resume.workExperiences.slice(12)" :key="item.title" class="experience-item">
+      <article
+        v-for="item in resume.workExperiences.slice(12)"
+        :key="item.title"
+        class="experience-item"
+      >
         <h3>{{ item.title }}</h3>
         <p class="meta">{{ item.period }}</p>
         <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
@@ -236,7 +254,11 @@ const printResume = () => window.print()
         <span>{{ resume.certificatesSectionTitle }}</span>
       </header>
       <div class="certificate-grid">
-        <figure v-for="certificate in resume.certificateImages" :key="certificate.src" :class="certificate.className">
+        <figure
+          v-for="certificate in resume.certificateImages"
+          :key="certificate.src"
+          :class="certificate.className"
+        >
           <img :src="certificate.src" :alt="certificate.title" />
           <figcaption>{{ certificate.title }}</figcaption>
         </figure>
@@ -258,9 +280,7 @@ const printResume = () => window.print()
 .resume-shell {
   min-height: 100vh;
   padding: 28px 16px 48px;
-  background:
-    radial-gradient(circle at 12% 8%, rgba(7, 63, 77, 0.08), transparent 28rem),
-    #eef2f4;
+  background: radial-gradient(circle at 12% 8%, rgba(7, 63, 77, 0.08), transparent 28rem), #eef2f4;
 }
 
 .print-button {
@@ -290,11 +310,11 @@ const printResume = () => window.print()
   box-shadow: 0 16px 45px rgba(20, 32, 40, 0.16);
   break-after: page;
   page-break-after: always;
-  font-family: Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
 .page::after {
-  content: '';
+  content: "";
   position: absolute;
   right: -58px;
   bottom: -58px;
@@ -311,6 +331,7 @@ const printResume = () => window.print()
   grid-template-rows: auto 1fr;
   padding: 15mm 16mm 12mm;
   column-gap: 14mm;
+  align-items: start;
 }
 
 .cover-corner {
@@ -323,7 +344,7 @@ const printResume = () => window.print()
 }
 
 .page-cover::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -26mm;
   right: -24mm;
@@ -374,6 +395,7 @@ const printResume = () => window.print()
   font-size: 13.4pt;
   font-weight: 900;
   line-height: 1.28;
+  text-align: center;
 }
 
 .summary {
@@ -498,7 +520,7 @@ const printResume = () => window.print()
 .skill-block li::before,
 .influence-block li::before,
 .experience-item li::before {
-  content: '•';
+  content: "•";
   position: absolute;
   left: 0;
   top: 0;
@@ -506,7 +528,8 @@ const printResume = () => window.print()
   font-weight: 900;
 }
 
-.skill-block li {
+.skill-block li,
+.influence-block li {
   margin-bottom: 1.8mm;
   font-size: 11.4pt;
   line-height: 1.25;
@@ -523,18 +546,11 @@ const printResume = () => window.print()
 
 .influence-block {
   grid-column: 1 / -1;
-  align-self: end;
   margin-top: 6mm;
 }
 
 .influence-block h2 {
   min-width: 60mm;
-}
-
-.influence-block li {
-  margin-bottom: 1.5mm;
-  font-size: 9.8pt;
-  line-height: 1.26;
 }
 
 .page-work,
@@ -762,6 +778,7 @@ const printResume = () => window.print()
     grid-template-columns: 42% 58%;
     grid-template-rows: auto 1fr;
     row-gap: 0;
+    align-items: start;
   }
 
   .influence-block {
