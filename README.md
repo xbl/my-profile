@@ -6,8 +6,9 @@
 
 | 路径                     | 说明                                                                               |
 | ------------------------ | ---------------------------------------------------------------------------------- |
-| `src-profile/`           | 简历源文件：`谢保龙简历.md`、`谢保龙简历.pdf`，以及脚本导出的 `谢保龙简历-web.pdf` |
-| `src/`                   | Vue 应用源码，入口 `src/main.ts`，简历页面在 `src/views/ResumeView.vue`            |
+| `src-profile/`           | 简历主源：`谢保龙简历.md`（以及本地 PDF 稿）；导出 `谢保龙简历-web.pdf` 也在此目录 |
+| `src/data/resume.ts`     | 简历结构化数据；联系方式可带 `href`（与 PPT 中超链接一致），网页与导出 PDF 均可点击   |
+| `src/`                   | Vue 应用源码，入口 `src/main.ts`，简历视图 `src/views/ResumeView.vue`              |
 | `public/resume-assets/`  | 从 PDF 抽出的头像、证书等静态资源                                                  |
 | `scripts/export-pdf.mjs` | 使用 Playwright（Chromium）无头导出 PDF                                            |
 
