@@ -8,6 +8,7 @@ export const resume: ResumeData = {
   headlineLines: ['Inspire（前 Thoughtworks 中国区）', '研发效能咨询业务总监'],
   summaryLines: [
     '17+ 年软件工程从业经验。带领团队聚焦国内大型客户的 AI4SE、DevOps、敏捷转型工作以及研发效能相关咨询业务。',
+    '',
     '服务客户：OOCL、大众安徽、海柔创新、中国工商银行、中国建设银行、中金公司、银河证券、民生银行、上海银行、中原银行、中央国债登记结算有限责任公司等',
   ],
   // 超链接与 `src-profile/谢保龙简历.pptx` 第 1 页一致（公众号为 deck 内 https；邮箱为 mailto）
