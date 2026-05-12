@@ -12,7 +12,7 @@ import { chromium } from 'playwright'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const appRoot = resolve(__dirname, '..')
-const outDir = resolve(appRoot, '../src-profile')
+const outDir = resolve(appRoot, 'src-profile')
 const outFile = join(outDir, '谢保龙简历-web.pdf')
 const PORT = 4179
 const BASE = `http://127.0.0.1:${PORT}`
