@@ -88,7 +88,7 @@
   opacity: 0.45;
 }
 
-@media (max-width: 900px) {
+@media screen and (max-width: 900px) {
   .resume-shell.theme-folio .page-cover {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
@@ -113,10 +113,14 @@
   }
 
   .resume-shell.theme-folio .profile-panel {
+    grid-column: 1;
+    grid-row: 1;
     padding: 14mm 10mm 16mm 14mm;
   }
 
   .resume-shell.theme-folio .cover-main {
+    grid-column: 2;
+    grid-row: 1;
     padding: 14mm 14mm 14mm 12mm;
   }
 }

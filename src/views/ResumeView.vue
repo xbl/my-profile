@@ -825,7 +825,8 @@ function isExternalHttpHref(href: string): boolean {
   color: var(--resume-ink);
 }
 
-@media (max-width: 900px) {
+/* 仅屏幕窄视口叠栏；print/PDF 用纸张宽度会误触 max-width，勿与 @media print 混用 */
+@media screen and (max-width: 900px) {
   .page {
     width: min(100%, 210mm);
     min-height: auto;
