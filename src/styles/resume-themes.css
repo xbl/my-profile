@@ -55,76 +55,74 @@
 }
 
 /*
- * 光谱：参考双栏简历——左侧约 1/3 深色通栏 + 白字，右侧约 2/3 白底主文；
- * 技能/influence 仍在右侧与底部，与数据结构一致。
+ * 对开（folio）：双栏参考布局；仅 `--folio-base` 为色源，其余用 color-mix 派生。
+ * 影响力在右侧 `cover-main` 内、基础技能下方（由模板 `v-if` 控制）。
  */
-.resume-shell.theme-spectrum {
-  --resume-teal: #1e3a8a;
-  --resume-green: #2563eb;
-  --resume-purple: #312e81;
-  --resume-ink: #0f172a;
-  --resume-muted: #e8eefc;
-  --resume-canvas: #e8edf5;
-  --resume-shell-radial: rgba(37, 99, 235, 0.06);
-  --resume-page-elevation: 0 12px 40px rgba(30, 64, 175, 0.12);
-  --spectrum-sidebar-bg: #1a2332;
-  --spectrum-sidebar-fg: rgba(255, 255, 255, 0.92);
-  --spectrum-sidebar-muted: rgba(255, 255, 255, 0.8);
+.resume-shell.theme-folio {
+  --folio-base: #1a2332;
+  --resume-teal: var(--folio-base);
+  --resume-green: color-mix(in srgb, var(--folio-base) 58%, #93c5fd);
+  --resume-purple: color-mix(in srgb, var(--folio-base) 48%, #a5b4fc);
+  --resume-ink: color-mix(in srgb, var(--folio-base) 90%, #020617);
+  --resume-muted: color-mix(in srgb, var(--folio-base) 9%, #fff);
+  --resume-canvas: color-mix(in srgb, var(--folio-base) 5%, #f8fafc);
+  --resume-shell-radial: color-mix(in srgb, var(--folio-base) 18%, transparent);
+  --resume-page-elevation: 0 12px 36px color-mix(in srgb, var(--folio-base) 24%, transparent);
 }
 
-.resume-shell.theme-spectrum .page-cover {
+.resume-shell.theme-folio .page-cover {
   grid-template-columns: 34% 66%;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto;
   column-gap: 0;
   padding: 0;
   align-items: stretch;
 }
 
-.resume-shell.theme-spectrum .cover-corner {
+.resume-shell.theme-folio .cover-corner {
   display: none;
 }
 
-.resume-shell.theme-spectrum .page-cover::before {
+.resume-shell.theme-folio .page-cover::before {
   display: none;
 }
 
-.resume-shell.theme-spectrum .profile-panel {
+.resume-shell.theme-folio .profile-panel {
   grid-row: 1;
   grid-column: 1;
   align-self: stretch;
   margin: 0;
   padding: 14mm 10mm 16mm 14mm;
-  background: var(--spectrum-sidebar-bg);
-  color: var(--spectrum-sidebar-fg);
+  background: var(--folio-base);
+  color: color-mix(in srgb, #fff 90%, var(--folio-base));
 }
 
-.resume-shell.theme-spectrum .profile-panel h1 {
-  color: #fff;
+.resume-shell.theme-folio .profile-panel h1 {
+  color: color-mix(in srgb, #fff 98%, var(--folio-base));
 }
 
-.resume-shell.theme-spectrum .headline {
-  color: rgba(255, 255, 255, 0.96);
+.resume-shell.theme-folio .headline {
+  color: color-mix(in srgb, #fff 88%, var(--folio-base));
 }
 
-.resume-shell.theme-spectrum .summary {
-  color: var(--spectrum-sidebar-muted);
+.resume-shell.theme-folio .summary {
+  color: color-mix(in srgb, #fff 74%, var(--folio-base));
 }
 
-.resume-shell.theme-spectrum .portrait-frame {
-  border-color: #fff;
+.resume-shell.theme-folio .portrait-frame {
+  border-color: color-mix(in srgb, #fff 96%, var(--folio-base));
   border-width: 2px;
 }
 
-.resume-shell.theme-spectrum .contact-icon {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
+.resume-shell.theme-folio .contact-icon {
+  background: color-mix(in srgb, #fff 20%, var(--folio-base));
+  color: color-mix(in srgb, #fff 94%, var(--folio-base));
 }
 
-.resume-shell.theme-spectrum .contact-link {
-  color: rgba(255, 255, 255, 0.95);
+.resume-shell.theme-folio .contact-link {
+  color: color-mix(in srgb, #fff 92%, var(--folio-base));
 }
 
-.resume-shell.theme-spectrum .cover-main {
+.resume-shell.theme-folio .cover-main {
   grid-row: 1;
   grid-column: 2;
   align-self: stretch;
@@ -133,38 +131,30 @@
   background: #fff;
 }
 
-.resume-shell.theme-spectrum .influence-block {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  margin-top: 0;
-  padding: 8mm 14mm 12mm 12mm;
-  border-top: 1px solid rgba(37, 99, 235, 0.2);
-  background: #f1f5f9;
+.resume-shell.theme-folio .influence-block-inline {
+  grid-column: unset;
+  margin-top: 7mm;
 }
 
-.resume-shell.theme-spectrum .page.page-cover {
+.resume-shell.theme-folio .page.page-cover {
   background: #fff;
 }
 
-.resume-shell.theme-spectrum .page.page-cover::after {
-  opacity: 0.35;
+.resume-shell.theme-folio .page.page-cover::after {
+  background: color-mix(in srgb, var(--folio-base) 12%, var(--resume-muted));
+  opacity: 0.45;
 }
 
 @media (max-width: 900px) {
-  .resume-shell.theme-spectrum .page-cover {
+  .resume-shell.theme-folio .page-cover {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     padding: 12mm 14mm;
     row-gap: 8mm;
   }
 
-  .resume-shell.theme-spectrum .profile-panel,
-  .resume-shell.theme-spectrum .cover-main {
-    grid-column: 1;
-    grid-row: auto;
-  }
-
-  .resume-shell.theme-spectrum .influence-block {
+  .resume-shell.theme-folio .profile-panel,
+  .resume-shell.theme-folio .cover-main {
     grid-column: 1;
     grid-row: auto;
   }
@@ -177,22 +167,18 @@
     padding: 13mm 14mm 10mm;
   }
 
-  .resume-shell.theme-spectrum .page-cover {
+  .resume-shell.theme-folio .page-cover {
     grid-template-columns: 34% 66%;
     column-gap: 0;
     padding: 0;
     align-items: stretch;
   }
 
-  .resume-shell.theme-spectrum .profile-panel {
+  .resume-shell.theme-folio .profile-panel {
     padding: 14mm 10mm 16mm 14mm;
   }
 
-  .resume-shell.theme-spectrum .cover-main {
+  .resume-shell.theme-folio .cover-main {
     padding: 14mm 14mm 14mm 12mm;
-  }
-
-  .resume-shell.theme-spectrum .influence-block {
-    padding: 8mm 14mm 12mm 12mm;
   }
 }

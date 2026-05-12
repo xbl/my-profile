@@ -51,9 +51,9 @@ npx playwright install chromium
 | -------- | ------------------------------------------ |
 | **经典** | 当前默认版式配色（青绿 + 绿条 + 紫条）     |
 | **商务** | 冷灰配色；侧栏略窄、内边距更紧，经历条目间距略压缩 |
-| **光谱** | 双栏式封面：左约 1/3 深蓝侧栏白字，右白底技能；底栏影响力浅灰分割 |
+| **对开** | 双栏：左 `--folio-base` 侧栏；右侧技能 + 影响力（色均由该基色派生） |
 
-带参打开（优先级高于 `localStorage`）：`/?theme=executive` 或 `/?theme=spectrum`（`classic` 同理）。
+带参打开（优先级高于 `localStorage`）：`/?theme=folio` 或 `/?theme=executive`（`classic` 同理）。旧参数 `?theme=spectrum` 会自动映射为 `folio`。
 
 导出 PDF 时若需固定主题，可设置环境变量后执行 `export:pdf:only`：
 
@@ -61,7 +61,7 @@ npx playwright install chromium
 RESUME_THEME=executive npm run export:pdf:only
 ```
 
-有效值：`classic`、`executive`、`spectrum`。
+有效值：`classic`、`executive`、`folio`（`spectrum` 视为 `folio`）。
 
 ## 导出 PDF
 

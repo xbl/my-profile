@@ -2,7 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import { resume } from "@/data/resume";
 import {
-  isResumeThemeId,
+  normalizeThemeParam,
   RESUME_THEME_STORAGE_KEY,
   RESUME_THEMES,
   type ResumeThemeId,
@@ -14,13 +14,21 @@ const themeId = ref<ResumeThemeId>("classic");
 onMounted(() => {
   try {
     const params = new URLSearchParams(window.location.search);
-    const q = params.get("theme");
-    if (q && isResumeThemeId(q)) {
+    const q = normalizeThemeParam(params.get("theme"));
+    if (q) {
       themeId.value = q;
+      if (params.get("theme") === "spectrum") {
+        localStorage.setItem(RESUME_THEME_STORAGE_KEY, "folio");
+      }
       return;
     }
-    const raw = localStorage.getItem(RESUME_THEME_STORAGE_KEY);
-    if (raw && isResumeThemeId(raw)) themeId.value = raw;
+    const raw = normalizeThemeParam(localStorage.getItem(RESUME_THEME_STORAGE_KEY));
+    if (raw) {
+      themeId.value = raw;
+      if (localStorage.getItem(RESUME_THEME_STORAGE_KEY) === "spectrum") {
+        localStorage.setItem(RESUME_THEME_STORAGE_KEY, "folio");
+      }
+    }
   } catch {
     /* ignore */
   }
@@ -163,9 +171,20 @@ function isExternalHttpHref(href: string): boolean {
             <li v-for="item in group.items" :key="item">{{ item }}</li>
           </ul>
         </section>
+
+        <section v-if="themeId === 'folio'" class="influence-block influence-block-inline">
+          <h2>
+            <img v-if="influenceIconSrc" class="skill-heading-icon" :src="influenceIconSrc" alt="" />
+            <span v-else class="skill-heading-fallback">⚑</span>
+            影响力
+          </h2>
+          <ul>
+            <li v-for="item in resume.influenceItems" :key="item">{{ item }}</li>
+          </ul>
+        </section>
       </main>
 
-      <section class="influence-block">
+      <section v-if="themeId !== 'folio'" class="influence-block">
         <h2>
           <img v-if="influenceIconSrc" class="skill-heading-icon" :src="influenceIconSrc" alt="" />
           <span v-else class="skill-heading-fallback">⚑</span>

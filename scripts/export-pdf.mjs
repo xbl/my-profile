@@ -17,8 +17,10 @@ const outFile = join(outDir, '谢保龙简历-web.pdf')
 const PORT = 4179
 const BASE = `http://127.0.0.1:${PORT}`
 const themeRaw = process.env.RESUME_THEME ?? 'classic'
-const resumeTheme = ['classic', 'executive', 'spectrum'].includes(themeRaw)
-  ? themeRaw
+const normalized =
+  themeRaw === 'spectrum' ? 'folio' : themeRaw
+const resumeTheme = ['classic', 'executive', 'folio'].includes(normalized)
+  ? normalized
   : 'classic'
 
 function waitForPort(port, host = '127.0.0.1', timeoutMs = 90_000) {
