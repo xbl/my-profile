@@ -1,5 +1,42 @@
 <script setup lang="ts">
+import { onMounted, ref, watch } from "vue";
 import { resume } from "@/data/resume";
+import {
+  isResumeThemeId,
+  RESUME_THEME_STORAGE_KEY,
+  RESUME_THEMES,
+  type ResumeThemeId,
+} from "@/data/resume-themes";
+import "@/styles/resume-themes.css";
+
+const themeId = ref<ResumeThemeId>("classic");
+
+onMounted(() => {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("theme");
+    if (q && isResumeThemeId(q)) {
+      themeId.value = q;
+      return;
+    }
+    const raw = localStorage.getItem(RESUME_THEME_STORAGE_KEY);
+    if (raw && isResumeThemeId(raw)) themeId.value = raw;
+  } catch {
+    /* ignore */
+  }
+});
+
+watch(themeId, (id) => {
+  try {
+    localStorage.setItem(RESUME_THEME_STORAGE_KEY, id);
+  } catch {
+    /* ignore */
+  }
+});
+
+function setTheme(id: ResumeThemeId) {
+  themeId.value = id;
+}
 
 /** `public/ppt-assets` 下的文件名，与联系方式 / 技能标题 / 区块标题顺序对应 */
 const PPT_ICON_FILES = {
@@ -48,13 +85,25 @@ function skillHeadingFallbackAt(index: number): string {
 function isExternalHttpHref(href: string): boolean {
   return href.startsWith("http://") || href.startsWith("https://");
 }
-
-const printResume = () => window.print();
 </script>
 
 <template>
-  <div class="resume-shell">
-    <button class="print-button" type="button" @click="printResume">打印 / 导出 PDF</button>
+  <div class="resume-shell" :class="`theme-${themeId}`">
+    <div class="theme-bar" role="group" aria-label="简历主题">
+      <span class="theme-bar-label">主题</span>
+      <button
+        v-for="t in RESUME_THEMES"
+        :key="t.id"
+        type="button"
+        class="theme-chip"
+        :class="{ 'theme-chip-active': themeId === t.id }"
+        :title="t.hint"
+        :aria-pressed="themeId === t.id"
+        @click="setTheme(t.id)"
+      >
+        {{ t.label }}
+      </button>
+    </div>
 
     <section class="page page-cover">
       <div class="cover-corner" />
@@ -277,34 +326,64 @@ const printResume = () => window.print();
 </template>
 
 <style scoped>
-:global(:root) {
-  --resume-teal: #073f4d;
-  --resume-green: #6fa27b;
-  --resume-purple: #685386;
-  --resume-ink: #111111;
-  --resume-muted: #e9eef0;
+.theme-bar {
+  position: sticky;
+  top: 16px;
+  z-index: 12;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 10px;
+  max-width: 210mm;
+  margin: 0 auto 20px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 20px rgba(20, 32, 40, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.theme-bar-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--resume-ink);
+  opacity: 0.65;
+  margin-right: 4px;
+}
+
+.theme-chip {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--resume-ink);
+  background: #fff;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.theme-chip:hover {
+  border-color: var(--resume-teal);
+  color: var(--resume-teal);
+}
+
+.theme-chip-active {
+  border-color: var(--resume-teal);
+  color: #fff;
+  background: var(--resume-teal);
 }
 
 .resume-shell {
   min-height: 100vh;
   padding: 28px 16px 48px;
-  background: radial-gradient(circle at 12% 8%, rgba(7, 63, 77, 0.08), transparent 28rem), #eef2f4;
-}
-
-.print-button {
-  position: sticky;
-  top: 16px;
-  z-index: 10;
-  display: block;
-  margin: 0 auto 20px;
-  border: 0;
-  border-radius: 999px;
-  padding: 10px 18px;
-  color: #fff;
-  background: var(--resume-teal);
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 8px 24px rgba(7, 63, 77, 0.18);
+  background:
+    radial-gradient(circle at 12% 8%, var(--resume-shell-radial), transparent 28rem),
+    var(--resume-canvas);
 }
 
 .page {
@@ -315,7 +394,7 @@ const printResume = () => window.print();
   overflow: hidden;
   color: var(--resume-ink);
   background: #fff;
-  box-shadow: 0 16px 45px rgba(20, 32, 40, 0.16);
+  box-shadow: var(--resume-page-elevation, 0 16px 45px rgba(20, 32, 40, 0.16));
   break-after: page;
   page-break-after: always;
   font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -722,7 +801,7 @@ const printResume = () => window.print();
   bottom: 5mm;
   z-index: 2;
   font-size: 11pt;
-  color: #111;
+  color: var(--resume-ink);
 }
 
 @media (max-width: 900px) {
@@ -766,7 +845,7 @@ const printResume = () => window.print();
     padding: 0 !important;
   }
 
-  .print-button {
+  .theme-bar {
     display: none;
   }
 

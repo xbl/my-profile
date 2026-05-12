@@ -16,6 +16,10 @@ const outDir = resolve(appRoot, 'src-profile')
 const outFile = join(outDir, '谢保龙简历-web.pdf')
 const PORT = 4179
 const BASE = `http://127.0.0.1:${PORT}`
+const themeRaw = process.env.RESUME_THEME ?? 'classic'
+const resumeTheme = ['classic', 'executive', 'spectrum'].includes(themeRaw)
+  ? themeRaw
+  : 'classic'
 
 function waitForPort(port, host = '127.0.0.1', timeoutMs = 90_000) {
   const deadline = Date.now() + timeoutMs
@@ -57,7 +61,7 @@ async function main() {
 
     const browser = await chromium.launch({ headless: true })
     const page = await browser.newPage()
-    await page.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 120_000 })
+    await page.goto(`${BASE}/?theme=${resumeTheme}`, { waitUntil: 'networkidle', timeout: 120_000 })
     await page.emulateMedia({ media: 'print' })
 
     // Chromium 生成的 PDF 默认保留 <a href> 链接（在阅读器中可点）；无需单独选项

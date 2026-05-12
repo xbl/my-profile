@@ -7,7 +7,9 @@
 | 路径                     | 说明                                                                               |
 | ------------------------ | ---------------------------------------------------------------------------------- |
 | `src-profile/`           | 简历主源：`谢保龙简历.md`（以及本地 PDF 稿）；导出 `谢保龙简历-web.pdf` 也在此目录 |
-| `src/data/resume.ts`     | 简历结构化数据；联系方式可带 `href`（与 PPT 中超链接一致），网页与导出 PDF 均可点击   |
+| `src/data/resume.ts`     | 简历结构化数据；联系方式可带 `href`（与 PPT 中超链接一致），网页与导出 PDF 均可点击 |
+| `src/data/resume-themes.ts` | 主题 id 列表与 `localStorage` 键名                                            |
+| `src/styles/resume-themes.css` | 主题配色与版式微调（封面栅格、内边距、页阴影等）                               |
 | `src/`                   | Vue 应用源码，入口 `src/main.ts`，简历视图 `src/views/ResumeView.vue`              |
 | `public/resume-assets/`  | 从 PDF 抽出的头像、证书等静态资源                                                  |
 | `scripts/export-pdf.mjs` | 使用 Playwright（Chromium）无头导出 PDF                                            |
@@ -41,17 +43,35 @@ npx playwright install chromium
 | `npm run export:pdf`      | 先 `build`，再启动临时 `vite preview`，用 Chromium 导出 PDF     |
 | `npm run export:pdf:only` | 仅导出（需已有可用构建，一般先执行过 `npm run build`）          |
 
+## 简历主题
+
+页顶可切换三种主题（选择会写入浏览器 `localStorage`）：
+
+| 主题     | 说明                                       |
+| -------- | ------------------------------------------ |
+| **经典** | 当前默认版式配色（青绿 + 绿条 + 紫条）     |
+| **商务** | 冷灰配色；侧栏略窄、内边距更紧，经历条目间距略压缩 |
+| **光谱** | 双栏式封面：左约 1/3 深蓝侧栏白字，右白底技能；底栏影响力浅灰分割 |
+
+带参打开（优先级高于 `localStorage`）：`/?theme=executive` 或 `/?theme=spectrum`（`classic` 同理）。
+
+导出 PDF 时若需固定主题，可设置环境变量后执行 `export:pdf:only`：
+
+```sh
+RESUME_THEME=executive npm run export:pdf:only
+```
+
+有效值：`classic`、`executive`、`spectrum`。
+
 ## 导出 PDF
 
-推荐使用脚本导出，版式由代码固定（A4、边距、`print` 媒体），与浏览器「打印 → 另存为 PDF」相比更稳定：
+推荐使用脚本导出，版式由代码固定（A4、边距；Chromium 使用 `print` 媒体生成 PDF）：
 
 ```sh
 npm run export:pdf
 ```
 
 生成文件：**`src-profile/谢保龙简历-web.pdf`**。
-
-若仅需在浏览器中手动打印，可在 `npm run dev` 打开的页面使用打印功能，并注意关闭多余页眉页脚、开启背景图形、边距选「无」或最小。
 
 ## 技术栈
 
