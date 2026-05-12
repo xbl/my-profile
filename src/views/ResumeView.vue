@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { resume } from "@/data/resume";
 import {
   normalizeThemeParam,
@@ -7,9 +7,11 @@ import {
   RESUME_THEMES,
   type ResumeThemeId,
 } from "@/data/resume-themes";
-import "@/styles/resume-themes.css";
+import { RESUME_THEME_SHELLS } from "@/components/resume/themes/themeShells";
 
 const themeId = ref<ResumeThemeId>("classic");
+
+const themeShell = computed(() => RESUME_THEME_SHELLS[themeId.value]);
 
 onMounted(() => {
   try {
@@ -96,7 +98,7 @@ function isExternalHttpHref(href: string): boolean {
 </script>
 
 <template>
-  <div class="resume-shell" :class="`theme-${themeId}`">
+  <component :is="themeShell">
     <div class="theme-bar" role="group" aria-label="简历主题">
       <span class="theme-bar-label">主题</span>
       <button
@@ -341,7 +343,7 @@ function isExternalHttpHref(href: string): boolean {
       </div>
       <span class="page-number">7</span>
     </section>
-  </div>
+  </component>
 </template>
 
 <style scoped>
@@ -397,7 +399,7 @@ function isExternalHttpHref(href: string): boolean {
   background: var(--resume-teal);
 }
 
-.resume-shell {
+:deep(.resume-shell) {
   min-height: 100vh;
   padding: 28px 16px 48px;
   background:
@@ -854,7 +856,7 @@ function isExternalHttpHref(href: string): boolean {
     background: #fff !important;
   }
 
-  .resume-shell {
+  :deep(.resume-shell) {
     padding: 0;
     background: #fff;
   }
@@ -877,14 +879,6 @@ function isExternalHttpHref(href: string): boolean {
     overflow: hidden;
     page-break-after: auto;
     break-after: auto;
-  }
-
-  .page-cover {
-    display: grid;
-    grid-template-columns: 42% 58%;
-    grid-template-rows: auto 1fr;
-    row-gap: 0;
-    align-items: start;
   }
 
   .influence-block {

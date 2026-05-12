@@ -1,0 +1,13 @@
+/**
+ * 经典主题：仅配色与氛围变量（版式见 ResumeView.vue）。
+ */
+.resume-shell.theme-classic {
+  --resume-teal: #073f4d;
+  --resume-green: #6fa27b;
+  --resume-purple: #685386;
+  --resume-ink: #111111;
+  --resume-muted: #e9eef0;
+  --resume-canvas: #eef2f4;
+  --resume-shell-radial: rgba(7, 63, 77, 0.08);
+  --resume-page-elevation: 0 16px 45px rgba(20, 32, 40, 0.16);
+}

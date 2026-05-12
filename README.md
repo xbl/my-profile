@@ -9,7 +9,7 @@
 | `src-profile/`           | 简历主源：`谢保龙简历.md`（以及本地 PDF 稿）；导出 `谢保龙简历-web.pdf` 也在此目录 |
 | `src/data/resume.ts`     | 简历结构化数据；联系方式可带 `href`（与 PPT 中超链接一致），网页与导出 PDF 均可点击 |
 | `src/data/resume-themes.ts` | 主题 id 列表与 `localStorage` 键名                                            |
-| `src/styles/resume-themes.css` | 主题配色与版式微调（封面栅格、内边距、页阴影等）                               |
+| `src/components/resume/themes/` | 各主题独立壳组件（`ResumeTheme*.vue`）与对应 `resume-theme-*.css`（配色与版式微调） |
 | `src/`                   | Vue 应用源码，入口 `src/main.ts`，简历视图 `src/views/ResumeView.vue`              |
 | `public/resume-assets/`  | 从 PDF 抽出的头像、证书等静态资源                                                  |
 | `scripts/export-pdf.mjs` | 使用 Playwright（Chromium）无头导出 PDF                                            |

@@ -1,0 +1,50 @@
+/**
+ * 商务主题：冷灰配色 + 略收窄侧栏与内边距。
+ */
+.resume-shell.theme-executive {
+  --resume-teal: #0f172a;
+  --resume-green: #334155;
+  --resume-purple: #475569;
+  --resume-ink: #0f172a;
+  --resume-muted: #f1f5f9;
+  --resume-canvas: #e2e8f0;
+  --resume-shell-radial: rgba(15, 23, 42, 0.06);
+  --resume-page-elevation: 0 10px 32px rgba(15, 23, 42, 0.1);
+}
+
+.resume-shell.theme-executive .page-cover {
+  grid-template-columns: 36% 64%;
+  column-gap: 11mm;
+  padding: 13mm 14mm 10mm;
+}
+
+.resume-shell.theme-executive .cover-corner {
+  width: 34mm;
+  height: 38mm;
+}
+
+.resume-shell.theme-executive .portrait-frame {
+  width: 52mm;
+  height: 52mm;
+}
+
+.resume-shell.theme-executive .page-work,
+.resume-shell.theme-executive .page-certificates {
+  padding: 13mm 14mm 12mm;
+}
+
+.resume-shell.theme-executive .experience-item {
+  margin-bottom: 5.2mm;
+}
+
+.resume-shell.theme-executive .compact .experience-item {
+  margin-bottom: 4.6mm;
+}
+
+@media print {
+  .resume-shell.theme-executive .page-cover {
+    grid-template-columns: 36% 64%;
+    column-gap: 11mm;
+    padding: 13mm 14mm 10mm;
+  }
+}

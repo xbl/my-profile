@@ -1,62 +1,5 @@
 /**
- * 简历主题：配色 + 版式（封面栅格、装饰区、内边距、阴影等），按 `.resume-shell.theme-*` 切换。
- */
-
-.resume-shell.theme-classic {
-  --resume-teal: #073f4d;
-  --resume-green: #6fa27b;
-  --resume-purple: #685386;
-  --resume-ink: #111111;
-  --resume-muted: #e9eef0;
-  --resume-canvas: #eef2f4;
-  --resume-shell-radial: rgba(7, 63, 77, 0.08);
-  --resume-page-elevation: 0 16px 45px rgba(20, 32, 40, 0.16);
-}
-
-/* 商务：冷灰配色 + 略收窄侧栏、更紧内边距，偏纸质报告感 */
-.resume-shell.theme-executive {
-  --resume-teal: #0f172a;
-  --resume-green: #334155;
-  --resume-purple: #475569;
-  --resume-ink: #0f172a;
-  --resume-muted: #f1f5f9;
-  --resume-canvas: #e2e8f0;
-  --resume-shell-radial: rgba(15, 23, 42, 0.06);
-  --resume-page-elevation: 0 10px 32px rgba(15, 23, 42, 0.1);
-}
-
-.resume-shell.theme-executive .page-cover {
-  grid-template-columns: 36% 64%;
-  column-gap: 11mm;
-  padding: 13mm 14mm 10mm;
-}
-
-.resume-shell.theme-executive .cover-corner {
-  width: 34mm;
-  height: 38mm;
-}
-
-.resume-shell.theme-executive .portrait-frame {
-  width: 52mm;
-  height: 52mm;
-}
-
-.resume-shell.theme-executive .page-work,
-.resume-shell.theme-executive .page-certificates {
-  padding: 13mm 14mm 12mm;
-}
-
-.resume-shell.theme-executive .experience-item {
-  margin-bottom: 5.2mm;
-}
-
-.resume-shell.theme-executive .compact .experience-item {
-  margin-bottom: 4.6mm;
-}
-
-/*
- * 对开（folio）：双栏参考布局；仅 `--folio-base` 为色源，其余用 color-mix 派生。
- * 影响力在右侧 `cover-main` 内、基础技能下方（由模板 `v-if` 控制）。
+ * 对开主题：双栏侧栏；`--folio-base` 为色源；影响力在右侧 cover-main 内（模板 v-if）。
  */
 .resume-shell.theme-folio {
   --folio-base: #1a2332;
@@ -161,14 +104,9 @@
 }
 
 @media print {
-  .resume-shell.theme-executive .page-cover {
-    grid-template-columns: 36% 64%;
-    column-gap: 11mm;
-    padding: 13mm 14mm 10mm;
-  }
-
   .resume-shell.theme-folio .page-cover {
     grid-template-columns: 34% 66%;
+    grid-template-rows: auto;
     column-gap: 0;
     padding: 0;
     align-items: stretch;
