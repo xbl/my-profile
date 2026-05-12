@@ -1,9 +1,19 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import pptManifest from "@/config/ppt-manifest.json";
 import { resume } from "@/data/resume";
 
-const pptIcons = computed(() => pptManifest.icons);
+/** `public/ppt-assets` 下的文件名，与联系方式 / 技能标题 / 区块标题顺序对应 */
+const PPT_ICON_FILES = {
+  contact: [
+    "icon-contact-phone.svg",
+    "icon-contact-email.svg",
+    "icon-contact-wechat.svg",
+  ],
+  skillSections: ["icon-skill-consult.svg", "icon-skill-basic.svg"],
+  influence: "icon-influence.svg",
+  headerWorkTeal: "icon-header-work.svg",
+  headerEarlyPurple: "icon-header-early.svg",
+  headerCertPurple: "icon-header-cert.svg",
+} as const;
 
 function iconSrc(name: string | null | undefined): string {
   if (!name) return "";
@@ -11,21 +21,19 @@ function iconSrc(name: string | null | undefined): string {
 }
 
 function contactIconAt(index: number): string {
-  const list = pptIcons.value.contact;
-  return iconSrc(list?.[index]);
+  return iconSrc(PPT_ICON_FILES.contact[index]);
 }
 
 function skillIconAt(index: number): string {
-  const list = pptIcons.value.skillSections;
-  return iconSrc(list?.[index]);
+  return iconSrc(PPT_ICON_FILES.skillSections[index]);
 }
 
-const influenceIconSrc = computed(() => iconSrc(pptIcons.value.influence));
-const headerWorkSrc = computed(() => iconSrc(pptIcons.value.headerWorkTeal));
-const headerEarlySrc = computed(() => iconSrc(pptIcons.value.headerEarlyPurple));
-const headerCertSrc = computed(() => iconSrc(pptIcons.value.headerCertPurple));
+const influenceIconSrc = iconSrc(PPT_ICON_FILES.influence);
+const headerWorkSrc = iconSrc(PPT_ICON_FILES.headerWorkTeal);
+const headerEarlySrc = iconSrc(PPT_ICON_FILES.headerEarlyPurple);
+const headerCertSrc = iconSrc(PPT_ICON_FILES.headerCertPurple);
 
-/** 无 PPT 图标资源时的占位（与 `public/ppt-assets` + `ppt-manifest` 对应顺序一致） */
+/** 无图标文件时的占位（与 `PPT_ICON_FILES` 顺序一致） */
 const CONTACT_FALLBACK_ICONS = ["☎", "✉", "✹"] as const;
 const SKILL_HEADING_FALLBACK_ICONS = ["▣", "✣"] as const;
 
