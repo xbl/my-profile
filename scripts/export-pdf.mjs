@@ -60,6 +60,7 @@ async function main() {
     await page.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 120_000 })
     await page.emulateMedia({ media: 'print' })
 
+    // Chromium 生成的 PDF 默认保留 <a href> 链接（在阅读器中可点）；无需单独选项
     await page.pdf({
       path: outFile,
       format: 'A4',

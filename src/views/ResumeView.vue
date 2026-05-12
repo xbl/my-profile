@@ -37,6 +37,10 @@ function skillHeadingFallbackAt(index: number): string {
   return SKILL_HEADING_FALLBACK_ICONS[index] ?? '◆'
 }
 
+function isExternalHttpHref(href: string): boolean {
+  return href.startsWith('http://') || href.startsWith('https://')
+}
+
 const printResume = () => window.print()
 </script>
 
@@ -71,7 +75,16 @@ const printResume = () => window.print()
               <img v-if="contactIconAt(ci)" class="contact-icon-img" :src="contactIconAt(ci)" alt="" />
               <span v-else class="contact-fallback">{{ contactFallbackAt(ci) }}</span>
             </span>
-            <span>{{ item.text }}</span>
+            <span class="contact-text">
+              <a
+                v-if="item.href"
+                :href="item.href"
+                class="contact-link"
+                :target="isExternalHttpHref(item.href) ? '_blank' : undefined"
+                :rel="isExternalHttpHref(item.href) ? 'noopener noreferrer' : undefined"
+              >{{ item.text }}</a>
+              <template v-else>{{ item.text }}</template>
+            </span>
           </li>
         </ul>
       </aside>
@@ -409,6 +422,22 @@ const printResume = () => window.print()
 .contact-fallback {
   font-size: 10pt;
   line-height: 1;
+}
+
+.contact-text {
+  word-break: break-word;
+}
+
+.contact-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+@media print {
+  .contact-link {
+    text-decoration: none;
+  }
 }
 
 .skill-heading-icon {

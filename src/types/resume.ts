@@ -21,6 +21,10 @@ export type ResumeSkillGroup = {
 
 export type ResumeContactItem = {
   text: string
+  /**
+   * 可点击跳转：`tel:`、`mailto:`、`https:` 等（与简历 PPT/Markdown 中的联系方式一致；导出 PDF 时仍保留为可点链接）
+   */
+  href?: string
 }
 
 export type ResumeData = {
