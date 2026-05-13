@@ -1,5 +1,6 @@
 import type { Component } from "vue";
 import type { ResumeThemeId } from "@/data/resume-themes";
+import ResumeThemeArtistic from "./ResumeThemeArtistic.vue";
 import ResumeThemeClassic from "./ResumeThemeClassic.vue";
 import ResumeThemeExecutive from "./ResumeThemeExecutive.vue";
 import ResumeThemeFolio from "./ResumeThemeFolio.vue";
@@ -9,4 +10,5 @@ export const RESUME_THEME_SHELLS: Record<ResumeThemeId, Component> = {
   classic: ResumeThemeClassic,
   executive: ResumeThemeExecutive,
   folio: ResumeThemeFolio,
+  artistic: ResumeThemeArtistic,
 };

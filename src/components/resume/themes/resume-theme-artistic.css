@@ -1,0 +1,26 @@
+/**
+ * 艺术主题：高对比黑白、粗黑标题条、侧栏技能圆点；打印保留对比度。
+ */
+.resume-shell.theme-artistic {
+  --art-ink: #0a0a0a;
+  --art-paper: #ffffff;
+  --art-muted: #9ca3af;
+  --resume-teal: var(--art-ink);
+  --resume-green: var(--art-ink);
+  --resume-purple: var(--art-ink);
+  --resume-ink: var(--art-ink);
+  --resume-muted: #e5e7eb;
+  --resume-canvas: #f3f4f6;
+  --resume-shell-radial: transparent;
+  --resume-page-elevation: 0 10px 28px rgba(0, 0, 0, 0.12);
+}
+
+.resume-shell.theme-artistic .page-artistic::after {
+  display: none;
+}
+
+@media print {
+  .resume-shell.theme-artistic .page-artistic {
+    box-shadow: none;
+  }
+}

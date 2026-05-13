@@ -7,6 +7,7 @@ import {
   RESUME_THEMES,
   type ResumeThemeId,
 } from "@/data/resume-themes";
+import ResumeArtisticContent from "@/components/resume/ResumeArtisticContent.vue";
 import { RESUME_THEME_SHELLS } from "@/components/resume/themes/themeShells";
 
 const themeId = ref<ResumeThemeId>("classic");
@@ -115,6 +116,8 @@ function isExternalHttpHref(href: string): boolean {
       </button>
     </div>
 
+    <ResumeArtisticContent v-if="themeId === 'artistic'" />
+    <template v-else>
     <section class="page page-cover">
       <div class="cover-corner" />
       <aside class="profile-panel">
@@ -343,6 +346,7 @@ function isExternalHttpHref(href: string): boolean {
       </div>
       <span class="page-number">7</span>
     </section>
+    </template>
   </component>
 </template>
 

@@ -1,0 +1,581 @@
+<script setup lang="ts">
+import { computed } from "vue";
+import { resume } from "@/data/resume";
+import type { ResumeContactItem, ResumeExperience } from "@/types/resume";
+
+defineOptions({ name: "ResumeArtisticContent" });
+
+const WORK_COVER = 2;
+const WORK_CHUNK = 5;
+
+function isExternalHttpHref(href: string): boolean {
+  return href.startsWith("http://") || href.startsWith("https://");
+}
+
+function contactKind(item: ResumeContactItem): "tel" | "mail" | "web" | "other" {
+  const h = item.href ?? "";
+  if (h.startsWith("tel:")) return "tel";
+  if (h.startsWith("mailto:")) return "mail";
+  if (h.startsWith("http")) return "web";
+  return "other";
+}
+
+function contactLabel(item: ResumeContactItem, index: number): string {
+  switch (contactKind(item)) {
+    case "tel":
+      return "电话";
+    case "mail":
+      return "邮箱";
+    case "web":
+      return "链接";
+    default:
+      return index === 0 ? "联系" : "其他";
+  }
+}
+
+function contactGlyph(item: ResumeContactItem): string {
+  switch (contactKind(item)) {
+    case "tel":
+      return "☎";
+    case "mail":
+      return "✉";
+    case "web":
+      return "↗";
+    default:
+      return "◆";
+  }
+}
+
+const workOnCover = computed(() => resume.workExperiences.slice(0, WORK_COVER));
+
+const workChunks = computed(() => {
+  const rest = resume.workExperiences.slice(WORK_COVER);
+  const chunks: ResumeExperience[][] = [];
+  for (let i = 0; i < rest.length; i += WORK_CHUNK) {
+    chunks.push(rest.slice(i, i + WORK_CHUNK));
+  }
+  return chunks;
+});
+
+</script>
+
+<template>
+  <div class="artistic-root">
+  <!-- 首页：顶贴边姓名+头像；全宽关于我；双栏经历+侧栏；全宽影响力 -->
+  <section class="page page-artistic page-artistic--cover">
+    <header class="artistic-hero">
+      <div class="artistic-hero-text">
+        <span class="artistic-hero-rule" aria-hidden="true" />
+        <h1 class="artistic-name">{{ resume.name }}</h1>
+        <p class="artistic-role">
+          <span v-for="(line, hi) in resume.headlineLines" :key="'h' + hi">
+            <br v-if="hi > 0" />
+            {{ line }}
+          </span>
+        </p>
+      </div>
+      <figure class="artistic-portrait">
+        <img :src="resume.portraitSrc" :alt="resume.portraitAlt" />
+      </figure>
+    </header>
+
+    <section class="artistic-about-full">
+      <h2 class="artistic-bar">关于我</h2>
+      <p class="artistic-about">
+        <span v-for="(line, si) in resume.summaryLines" :key="'s' + si">
+          <template v-if="si > 0"><br /></template>
+          {{ line }}
+        </span>
+      </p>
+    </section>
+
+    <div class="artistic-grid">
+      <div class="artistic-main">
+        <section class="artistic-block">
+          <h2 class="artistic-bar">工作经历</h2>
+          <article v-for="item in workOnCover" :key="item.title" class="artistic-exp">
+            <h3>{{ item.title }}</h3>
+            <p class="artistic-exp-meta">
+              {{ item.period }}<template v-if="item.role"> · {{ item.role }}</template>
+            </p>
+            <p v-if="item.result" class="artistic-exp-result">{{ item.result }}</p>
+            <ul v-if="item.bullets.length" class="artistic-exp-bullets">
+              <li v-for="b in item.bullets" :key="b">{{ b }}</li>
+            </ul>
+          </article>
+        </section>
+      </div>
+
+      <aside class="artistic-side">
+        <section class="artistic-block">
+          <h2 class="artistic-bar artistic-bar--end">联系方式</h2>
+          <ul class="artistic-contacts">
+            <li v-for="(item, ci) in resume.contactItems" :key="item.text">
+              <span class="artistic-contact-icon" aria-hidden="true">{{ contactGlyph(item) }}</span>
+              <div class="artistic-contact-body">
+                <span class="artistic-contact-label">{{ contactLabel(item, ci) }}</span>
+                <span class="artistic-contact-value">
+                  <a
+                    v-if="item.href"
+                    :href="item.href"
+                    class="artistic-link"
+                    :target="isExternalHttpHref(item.href) ? '_blank' : undefined"
+                    :rel="isExternalHttpHref(item.href) ? 'noopener noreferrer' : undefined"
+                    >{{ item.text }}</a
+                  >
+                  <template v-else>{{ item.text }}</template>
+                </span>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="artistic-block">
+          <h2 class="artistic-bar artistic-bar--end">技能</h2>
+          <div class="artistic-skills-wrap">
+            <div v-for="group in resume.skillGroups" :key="group.title" class="artistic-skill-group">
+              <h3 class="artistic-skill-group-title">{{ group.title }}</h3>
+              <ul class="artistic-skill-list">
+                <li v-for="item in group.items" :key="item">{{ item }}</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <section class="artistic-influence-full">
+      <h2 class="artistic-bar artistic-bar--full">影响力</h2>
+      <ul class="artistic-influence-list">
+        <li v-for="line in resume.influenceItems" :key="line">{{ line }}</li>
+      </ul>
+    </section>
+  </section>
+
+  <section
+    v-for="(chunk, wi) in workChunks"
+    :key="'w' + wi"
+    class="page page-artistic page-artistic--flow"
+  >
+    <h2 class="artistic-bar artistic-bar--solo">{{ resume.workSectionTitle }}</h2>
+    <article v-for="item in chunk" :key="item.title" class="artistic-exp">
+      <h3>{{ item.title }}</h3>
+      <p class="artistic-exp-meta">
+        {{ item.period }}<template v-if="item.role"> · {{ item.role }}</template>
+      </p>
+      <p v-if="item.result" class="artistic-exp-result">{{ item.result }}</p>
+      <ul v-if="item.bullets.length" class="artistic-exp-bullets">
+        <li v-for="b in item.bullets" :key="b">{{ b }}</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="page page-artistic page-artistic--flow">
+    <h2 class="artistic-bar artistic-bar--solo">{{ resume.earlySectionTitle }}</h2>
+    <article v-for="item in resume.earlyExperiences" :key="item.title" class="artistic-exp">
+      <h3>{{ item.title }}</h3>
+      <p class="artistic-exp-meta">
+        {{ item.period }}<template v-if="item.role"> · {{ item.role }}</template>
+      </p>
+      <ul v-if="item.bullets.length" class="artistic-exp-bullets">
+        <li v-for="b in item.bullets" :key="b">{{ b }}</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="page page-artistic page-artistic--flow page-artistic--last">
+    <h2 class="artistic-bar artistic-bar--solo">{{ resume.certificatesSectionTitle }}</h2>
+    <div class="artistic-cert-grid">
+      <figure v-for="c in resume.certificateImages" :key="c.src" class="artistic-cert">
+        <img :src="c.src" :alt="c.title" />
+        <figcaption>{{ c.title }}</figcaption>
+      </figure>
+    </div>
+  </section>
+  </div>
+</template>
+
+<style scoped>
+.artistic-root {
+  display: contents;
+}
+.page-artistic {
+  position: relative;
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto 24px;
+  padding: 12mm 14mm 14mm;
+  overflow: hidden;
+  color: #0a0a0a;
+  background: #fff;
+  box-shadow: var(--resume-page-elevation, 0 10px 28px rgba(0, 0, 0, 0.12));
+  break-after: page;
+  page-break-after: always;
+  font-family:
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    "PingFang SC",
+    "Microsoft YaHei",
+    sans-serif;
+}
+
+.page-artistic--cover {
+  padding: 0 14mm 12mm;
+}
+
+.page-artistic--flow {
+  padding-top: 14mm;
+}
+
+.artistic-hero {
+  display: grid;
+  grid-template-columns: 1fr 52mm;
+  gap: 8mm;
+  align-items: start;
+  margin: 0 0 7mm;
+}
+
+.artistic-hero-text {
+  position: relative;
+  padding-left: 5mm;
+}
+
+.artistic-hero-rule {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #0a0a0a;
+}
+
+.artistic-name {
+  margin: 0;
+  font-size: 26pt;
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: 0.08em;
+  color: #0a0a0a;
+}
+
+.artistic-role {
+  margin: 2mm 0 0;
+  max-width: 52em;
+  font-size: 10.5pt;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  color: #1f1f1f;
+}
+
+.artistic-portrait {
+  margin: 0;
+  align-self: start;
+  width: 100%;
+  min-height: 56mm;
+  overflow: hidden;
+  background: #fff;
+}
+
+.artistic-portrait img {
+  width: 100%;
+  height: 100%;
+  min-height: 56mm;
+  display: block;
+  object-fit: cover;
+  object-position: 50% 18%;
+  filter: grayscale(100%);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.artistic-about-full {
+  margin: 0 0 8mm;
+}
+
+.artistic-about-full .artistic-bar {
+  text-align: left;
+}
+
+.artistic-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr);
+  gap: 0 10mm;
+  align-items: start;
+}
+
+.artistic-side {
+  padding-top: 5mm;
+}
+
+.artistic-bar {
+  margin: 0 0 4mm;
+  padding: 2.2mm 5mm;
+  font-size: 9.5pt;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff;
+  background: #0a0a0a;
+  text-align: center;
+}
+
+.artistic-bar--end {
+  text-align: right;
+}
+
+.artistic-bar--full {
+  text-align: left;
+}
+
+.artistic-bar--solo {
+  margin-bottom: 6mm;
+}
+
+.artistic-block + .artistic-block {
+  margin-top: 8mm;
+}
+
+.artistic-influence-full {
+  margin-top: 9mm;
+  padding-top: 2mm;
+  border-top: 1px solid #e5e7eb;
+}
+
+.artistic-influence-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.artistic-influence-list li {
+  margin: 0 0 3.5mm;
+  padding: 0;
+  font-size: 10.2pt;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: justify;
+  color: #111827;
+}
+
+.artistic-influence-list li:last-child {
+  margin-bottom: 0;
+}
+
+.artistic-about {
+  margin: 0;
+  font-size: 10.2pt;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: justify;
+  color: #111827;
+}
+
+.artistic-exp + .artistic-exp {
+  margin-top: 6mm;
+}
+
+.artistic-exp h3 {
+  margin: 0 0 1mm;
+  font-size: 11.2pt;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.artistic-exp-meta {
+  margin: 0 0 1.5mm;
+  font-size: 10pt;
+  font-style: italic;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.artistic-exp-result {
+  margin: 0 0 1.5mm;
+  font-size: 10pt;
+  font-weight: 500;
+  line-height: 1.38;
+}
+
+.artistic-exp-bullets {
+  margin: 0;
+  padding: 0 0 0 4.5mm;
+  list-style: disc;
+  font-size: 9.6pt;
+  font-weight: 500;
+  line-height: 1.32;
+  color: #1f2937;
+}
+
+.artistic-exp-bullets li {
+  margin-bottom: 0.8mm;
+}
+
+.artistic-contacts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.artistic-contacts li {
+  display: grid;
+  grid-template-columns: 9mm 1fr;
+  gap: 3mm;
+  align-items: start;
+  margin-bottom: 3.5mm;
+}
+
+.artistic-contact-icon {
+  display: grid;
+  place-items: center;
+  width: 9mm;
+  height: 9mm;
+  font-size: 11pt;
+  line-height: 1;
+  color: #fff;
+  background: #0a0a0a;
+}
+
+.artistic-contact-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6mm;
+  min-width: 0;
+}
+
+.artistic-contact-label {
+  font-size: 9pt;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.artistic-contact-value {
+  font-size: 9.2pt;
+  font-weight: 500;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.artistic-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.artistic-skills-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5mm;
+}
+
+.artistic-skill-group {
+  margin: 0;
+}
+
+.artistic-skill-group-title {
+  margin: 0 0 2mm;
+  font-size: 9.8pt;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #0a0a0a;
+}
+
+.artistic-skill-list {
+  margin: 0;
+  padding: 0 0 0 4.5mm;
+  list-style: disc;
+  font-size: 10pt;
+  font-weight: 500;
+  line-height: 1.42;
+  color: #1f2937;
+}
+
+.artistic-skill-list li {
+  margin: 0 0 1.6mm;
+}
+
+.artistic-skill-list li:last-child {
+  margin-bottom: 0;
+}
+
+.artistic-cert-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4mm 5mm;
+}
+
+.artistic-cert {
+  margin: 0;
+  text-align: center;
+}
+
+.artistic-cert img {
+  width: 100%;
+  max-height: 52mm;
+  object-fit: contain;
+  border: 1px solid #e5e7eb;
+}
+
+.artistic-cert figcaption {
+  margin-top: 1.5mm;
+  font-size: 8pt;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+@media screen and (max-width: 900px) {
+  .page-artistic {
+    width: min(100%, 210mm);
+    min-height: auto;
+  }
+
+  .artistic-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .artistic-portrait {
+    max-height: 70mm;
+    min-height: 48mm;
+  }
+
+  .artistic-portrait img {
+    min-height: 48mm;
+    max-height: 70mm;
+  }
+
+  .artistic-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .artistic-side {
+    padding-top: 0;
+  }
+
+  .artistic-cert-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media print {
+  .artistic-link {
+    text-decoration: none;
+  }
+
+  .page-artistic {
+    width: 210mm;
+    height: 296mm;
+    min-height: 296mm;
+    margin: 0;
+    box-shadow: none;
+    overflow: hidden;
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  .page-artistic--last {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+}
+</style>
