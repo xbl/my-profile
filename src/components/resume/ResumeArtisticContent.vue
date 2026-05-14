@@ -5,8 +5,9 @@ import type { ResumeContactItem, ResumeExperience } from "@/types/resume";
 
 defineOptions({ name: "ResumeArtisticContent" });
 
-const WORK_COVER = 2;
-const WORK_CHUNK = 5;
+const WORK_COVER = 1;
+/** 与固定 A4 页高匹配；过大则打印裁切，过小则页内留白偏多 */
+const WORK_CHUNK = 2;
 
 function isExternalHttpHref(href: string): boolean {
   return href.startsWith("http://") || href.startsWith("https://");
@@ -79,6 +80,7 @@ const workChunks = computed(() => {
       </figure>
     </header>
 
+    <div class="artistic-cover-body">
     <section class="artistic-about-full">
       <h2 class="artistic-bar">关于我</h2>
       <p class="artistic-about">
@@ -150,6 +152,7 @@ const workChunks = computed(() => {
         <li v-for="line in resume.influenceItems" :key="line">{{ line }}</li>
       </ul>
     </section>
+    </div>
   </section>
 
   <section
@@ -158,6 +161,7 @@ const workChunks = computed(() => {
     class="page page-artistic page-artistic--flow"
   >
     <h2 class="artistic-bar artistic-bar--solo">{{ resume.workSectionTitle }}</h2>
+    <div class="artistic-flow-body">
     <article v-for="item in chunk" :key="item.title" class="artistic-exp">
       <h3>{{ item.title }}</h3>
       <p class="artistic-exp-meta">
@@ -168,10 +172,12 @@ const workChunks = computed(() => {
         <li v-for="b in item.bullets" :key="b">{{ b }}</li>
       </ul>
     </article>
+    </div>
   </section>
 
   <section class="page page-artistic page-artistic--flow">
     <h2 class="artistic-bar artistic-bar--solo">{{ resume.earlySectionTitle }}</h2>
+    <div class="artistic-flow-body">
     <article v-for="item in resume.earlyExperiences" :key="item.title" class="artistic-exp">
       <h3>{{ item.title }}</h3>
       <p class="artistic-exp-meta">
@@ -181,15 +187,18 @@ const workChunks = computed(() => {
         <li v-for="b in item.bullets" :key="b">{{ b }}</li>
       </ul>
     </article>
+    </div>
   </section>
 
   <section class="page page-artistic page-artistic--flow page-artistic--last">
     <h2 class="artistic-bar artistic-bar--solo">{{ resume.certificatesSectionTitle }}</h2>
+    <div class="artistic-flow-body artistic-flow-body--certs">
     <div class="artistic-cert-grid">
       <figure v-for="c in resume.certificateImages" :key="c.src" class="artistic-cert">
         <img :src="c.src" :alt="c.title" />
         <figcaption>{{ c.title }}</figcaption>
       </figure>
+    </div>
     </div>
   </section>
   </div>
@@ -202,8 +211,11 @@ const workChunks = computed(() => {
 
 .page-artistic {
   position: relative;
+  box-sizing: border-box;
   width: 210mm;
   height: 297mm;
+  min-height: 297mm;
+  max-height: 297mm;
   margin: 0 auto 24px;
   padding: 14mm 16mm 16mm;
   overflow: hidden;
@@ -222,11 +234,45 @@ const workChunks = computed(() => {
 }
 
 .page-artistic--cover {
+  display: flex;
+  flex-direction: column;
   padding: 0 16mm 14mm;
+  box-sizing: border-box;
 }
 
 .page-artistic--flow {
-  padding-top: 16mm;
+  display: flex;
+  flex-direction: column;
+  padding: 16mm 16mm 12mm;
+  box-sizing: border-box;
+}
+
+.artistic-cover-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7mm;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.artistic-flow-body {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.artistic-flow-body--certs {
+  display: flex;
+  flex-direction: column;
+}
+
+.artistic-flow-body--certs .artistic-cert-grid {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .artistic-hero {
@@ -235,6 +281,7 @@ const workChunks = computed(() => {
   gap: 10mm;
   align-items: start;
   margin: 0 0 9mm;
+  flex-shrink: 0;
 }
 
 .artistic-hero-text {
@@ -305,6 +352,14 @@ const workChunks = computed(() => {
   grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
   gap: 0 12mm;
   align-items: start;
+  flex: 1;
+  min-height: 0;
+}
+
+.artistic-main,
+.artistic-side {
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .artistic-side {
@@ -332,6 +387,7 @@ const workChunks = computed(() => {
 }
 
 .artistic-bar--solo {
+  flex-shrink: 0;
   margin-bottom: 7mm;
 }
 
@@ -340,7 +396,8 @@ const workChunks = computed(() => {
 }
 
 .artistic-influence-full {
-  margin-top: 10mm;
+  flex-shrink: 0;
+  margin-top: 0;
   padding-top: 3mm;
   border-top: 1px solid #d1d5db;
 }
@@ -563,13 +620,20 @@ const workChunks = computed(() => {
 @media screen and (max-width: 900px) {
   .page-artistic {
     width: min(100%, 210mm);
-    height: auto;
-    min-height: auto;
+    height: 297mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    margin-left: auto;
+    margin-right: auto;
     padding: 10mm 12mm;
   }
 
   .page-artistic--cover {
     padding: 0 12mm 10mm;
+  }
+
+  .page-artistic--flow {
+    padding: 12mm 12mm 10mm;
   }
 
   .artistic-hero {
@@ -616,6 +680,7 @@ const workChunks = computed(() => {
     width: 210mm;
     height: 296mm;
     min-height: 296mm;
+    max-height: 296mm;
     margin: 0;
     padding: 14mm 16mm 16mm;
     box-shadow: none;
@@ -626,6 +691,16 @@ const workChunks = computed(() => {
 
   .page-artistic--cover {
     padding: 0 16mm 14mm;
+  }
+
+  .page-artistic--flow {
+    padding: 14mm 16mm 12mm;
+  }
+
+  .artistic-cover-body,
+  .artistic-flow-body,
+  .artistic-flow-body--certs .artistic-cert-grid {
+    overflow: hidden !important;
   }
 
   .page-artistic--last {

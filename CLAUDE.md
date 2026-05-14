@@ -40,7 +40,7 @@ These variables are consumed by `ResumeView.vue`'s scoped styles and the theme's
 
 | Theme | Content component | Layout |
 |---|---|---|
-| classic, executive, folio | Shared template inside `ResumeView.vue` (7-page layout with cover portrait + work/early/cert pages) | CSS overrides adjust spacing/colors |
+| classic, executive, folio | Shared template inside `ResumeView.vue` (8-page layout with cover portrait + work/early/cert pages) | CSS overrides adjust spacing/colors |
 | artistic | `ResumeArtisticContent.vue` (completely independent component) | Own multi-page layout, no shared template |
 
 **Theme shells are mapped** in `src/components/resume/themes/themeShells.ts` — `RESUME_THEME_SHELLS` record keyed by `ResumeThemeId`. `ResumeView.vue` uses `<component :is="themeShell">` to switch shells dynamically.
@@ -55,6 +55,31 @@ Theme IDs and labels are defined in `src/data/resume-themes.ts`. Legacy `spectru
 - Theme CSS files — color variables only (mostly); executive/folio also override layout variables
 - `ResumeArtisticContent.vue` scoped styles — self-contained art-theme layout
 
+### Page Layout Constraints
+
+- **Classic / executive / folio**（`ResumeView.vue` 的 `.page`）：屏上 `min-height: 297mm` 可增高；打印 `min-height: 296mm`，Inspire 经历由 JS 按可视高度分包（见下节）。
+
+- **Artistic**（`ResumeArtisticContent.vue` 的 `.page-artistic`）：**强制 A4** — `width: 210mm`，屏 `height/min/max: 297mm`，打印 `296mm`；`box-sizing: border-box`；封面与续页内用 `.artistic-cover-body` / `.artistic-flow-body` 在屏上 `overflow-y: auto`，打印 `overflow: hidden`，避免单页在视觉上「撑破」纸张。
+
+- Decorative pseudo-elements (`.page::after`, `.cover-corner`, `.decor-top`, etc.) are hidden in print via `display: none` where applicable.
+
+### Work Experience Pagination
+
+**Shared template** (classic/executive/folio): Inspire 工作经历不再手写固定 `slice`；`ResumeView.vue` 用 **隐藏测量区**（`.work-chunk-measure`）在 `297mm` 高的 `.page-work` 内堆叠全部条目，量出每条 `offsetHeight + margin-bottom`；首包按 **非 compact** 高度预算，后续包按 **compact** 预算；`packWorkExperienceChunks`（`src/utils/packResumeWorkChunks.ts`）**贪心**塞满一页再放下一页，单条超高则独占一页。`resize` / `beforeprint` / `fonts.ready` / `resume.workExperiences` 变化会触发重算。
+
+| Page # | Section | 内容 | Modifier |
+|--------|---------|------|----------|
+| 1 | Cover | portrait, skills, contact, influence | `.page-cover` |
+| 2… | Inspire work | `workChunks`（动态长度） | 首页 `.page-work`，后续 `.compact` |
+| *+1* | Early | `earlySectionTitle` + `earlyExperiences` | `.page-work.compact.page-early` |
+| *+2* | Certificates | `certificateImages` | `.page-certificates` |
+
+页码：封面 `1`，工作经历 `2 + chunkIndex`，早期 `2 + workChunks.length`，证书 `3 + workChunks.length`。
+
+- **Section title placement (PDF / print)**：每个 Inspire chunk 仍各自以 teal `workSectionTitle` 开头；早期页 **不要** 再叠一条 Inspire 标题（该页无 Inspire 正文）。
+
+**Artistic theme** (`ResumeArtisticContent.vue`): `WORK_COVER` / `WORK_CHUNK` 控制经历分页；当前 `WORK_CHUNK = 2` 以适配固定 A4 页高。续改内容量时优先调 chunk 或内层字号，**不要**去掉 `.page-artistic` 的固定高。
+
 ### PDF Export
 
 `scripts/export-pdf.mjs`:
@@ -66,8 +91,8 @@ Theme IDs and labels are defined in `src/data/resume-themes.ts`. Legacy `spectru
 
 The `@media print` rules in both `ResumeView.vue` and `ResumeArtisticContent.vue` handle:
 - Removing box-shadows and background colors
-- Fixing page dimensions to 210mm × 296mm
-- Hiding the theme switcher bar
+- Classic/folio: `min-height: 296mm` on `.page`; Artistic: **fixed** `height/min/max: 296mm` on `.page-artistic`
+- Hiding the theme switcher bar and decorative pseudo-elements
 - Removing link underlines
 
 ### Key TypeScript Types (`src/types/resume.ts`)

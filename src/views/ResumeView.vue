@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
 import { resume } from "@/data/resume";
 import {
   normalizeThemeParam,
@@ -9,6 +9,7 @@ import {
 } from "@/data/resume-themes";
 import ResumeArtisticContent from "@/components/resume/ResumeArtisticContent.vue";
 import { RESUME_THEME_SHELLS } from "@/components/resume/themes/themeShells";
+import { fallbackChunks, packWorkExperienceChunks } from "@/utils/packResumeWorkChunks";
 
 const themeId = ref<ResumeThemeId>("classic");
 
@@ -23,18 +24,22 @@ onMounted(() => {
       if (params.get("theme") === "spectrum") {
         localStorage.setItem(RESUME_THEME_STORAGE_KEY, "folio");
       }
-      return;
-    }
-    const raw = normalizeThemeParam(localStorage.getItem(RESUME_THEME_STORAGE_KEY));
-    if (raw) {
-      themeId.value = raw;
-      if (localStorage.getItem(RESUME_THEME_STORAGE_KEY) === "spectrum") {
-        localStorage.setItem(RESUME_THEME_STORAGE_KEY, "folio");
+    } else {
+      const raw = normalizeThemeParam(localStorage.getItem(RESUME_THEME_STORAGE_KEY));
+      if (raw) {
+        themeId.value = raw;
+        if (localStorage.getItem(RESUME_THEME_STORAGE_KEY) === "spectrum") {
+          localStorage.setItem(RESUME_THEME_STORAGE_KEY, "folio");
+        }
       }
     }
   } catch {
     /* ignore */
   }
+  void recalcWorkChunks();
+  document.fonts?.ready?.then(() => void recalcWorkChunks()).catch(() => {});
+  window.addEventListener("resize", scheduleRecalcWorkChunks);
+  window.addEventListener("beforeprint", recalcWorkChunks as EventListener);
 });
 
 watch(themeId, (id) => {
@@ -42,6 +47,9 @@ watch(themeId, (id) => {
     localStorage.setItem(RESUME_THEME_STORAGE_KEY, id);
   } catch {
     /* ignore */
+  }
+  if (id !== "artistic") {
+    void nextTick(() => void recalcWorkChunks());
   }
 });
 
@@ -96,6 +104,76 @@ function skillHeadingFallbackAt(index: number): string {
 function isExternalHttpHref(href: string): boolean {
   return href.startsWith("http://") || href.startsWith("https://");
 }
+
+/** Inspire 工作经历：按可视区高度贪心分包（首页非 compact，后续 compact） */
+const workChunks = shallowRef(fallbackChunks(resume.workExperiences, 3));
+
+const probeLimitFirst = ref<HTMLElement | null>(null);
+const probeLimitRest = ref<HTMLElement | null>(null);
+const probeStackFull = ref<HTMLElement | null>(null);
+const probeStackCompact = ref<HTMLElement | null>(null);
+
+let resizeDebounce: ReturnType<typeof setTimeout> | undefined;
+
+function articleBudgetPx(probeEl: HTMLElement): number {
+  const hdr = probeEl.querySelector(".page-header") as HTMLElement | null;
+  if (!hdr) return 600;
+  const pb = parseFloat(getComputedStyle(probeEl).paddingBottom);
+  return Math.floor(probeEl.clientHeight - hdr.offsetTop - hdr.offsetHeight - pb - 2);
+}
+
+function heightsFromStack(stack: HTMLElement): number[] {
+  const arts = Array.from(stack.querySelectorAll(".experience-item")) as HTMLElement[];
+  return arts.map((el) => {
+    const mb = parseFloat(getComputedStyle(el).marginBottom) || 0;
+    return el.offsetHeight + mb;
+  });
+}
+
+async function recalcWorkChunks() {
+  await nextTick();
+  if (
+    !probeLimitFirst.value ||
+    !probeLimitRest.value ||
+    !probeStackFull.value ||
+    !probeStackCompact.value
+  ) {
+    workChunks.value = fallbackChunks(resume.workExperiences, 3);
+    return;
+  }
+  const maxFirst = articleBudgetPx(probeLimitFirst.value);
+  const maxRest = articleBudgetPx(probeLimitRest.value);
+  const hFull = heightsFromStack(probeStackFull.value);
+  const hCompact = heightsFromStack(probeStackCompact.value);
+  if (hFull.length !== resume.workExperiences.length || hCompact.length !== resume.workExperiences.length) {
+    workChunks.value = fallbackChunks(resume.workExperiences, 3);
+    return;
+  }
+  workChunks.value = packWorkExperienceChunks(
+    resume.workExperiences,
+    hFull,
+    hCompact,
+    maxFirst,
+    maxRest,
+  );
+}
+
+function scheduleRecalcWorkChunks() {
+  clearTimeout(resizeDebounce);
+  resizeDebounce = setTimeout(() => void recalcWorkChunks(), 200);
+}
+
+watch(
+  () => resume.workExperiences,
+  () => void recalcWorkChunks(),
+  { deep: true },
+);
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", scheduleRecalcWorkChunks);
+  window.removeEventListener("beforeprint", recalcWorkChunks as EventListener);
+  clearTimeout(resizeDebounce);
+});
 </script>
 
 <template>
@@ -203,7 +281,81 @@ function isExternalHttpHref(href: string): boolean {
       <span class="page-number">1</span>
     </section>
 
-    <section class="page page-work">
+    <div class="work-chunk-measure" aria-hidden="true">
+      <div ref="probeLimitFirst" class="page page-work work-chunk-probe">
+        <div class="decor decor-top" />
+        <header class="page-header teal">
+          <span class="header-icon">
+            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+            <span v-else>♟</span>
+          </span>
+          <span>{{ resume.workSectionTitle }}</span>
+        </header>
+      </div>
+      <div ref="probeLimitRest" class="page page-work compact work-chunk-probe">
+        <div class="decor decor-top" />
+        <header class="page-header teal">
+          <span class="header-icon">
+            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+            <span v-else>♟</span>
+          </span>
+          <span>{{ resume.workSectionTitle }}</span>
+        </header>
+      </div>
+      <div ref="probeStackFull" class="page page-work work-chunk-probe">
+        <div class="decor decor-top" />
+        <header class="page-header teal">
+          <span class="header-icon">
+            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+            <span v-else>♟</span>
+          </span>
+          <span>{{ resume.workSectionTitle }}</span>
+        </header>
+        <article
+          v-for="item in resume.workExperiences"
+          :key="'mf-' + item.title"
+          class="experience-item"
+        >
+          <h3>{{ item.title }}</h3>
+          <p class="meta">{{ item.period }}</p>
+          <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
+          <p v-if="item.result" class="result">成果：{{ item.result }}</p>
+          <ul>
+            <li v-for="bullet in item.bullets" :key="bullet">{{ bullet }}</li>
+          </ul>
+        </article>
+      </div>
+      <div ref="probeStackCompact" class="page page-work compact work-chunk-probe">
+        <div class="decor decor-top" />
+        <header class="page-header teal">
+          <span class="header-icon">
+            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+            <span v-else>♟</span>
+          </span>
+          <span>{{ resume.workSectionTitle }}</span>
+        </header>
+        <article
+          v-for="item in resume.workExperiences"
+          :key="'mc-' + item.title"
+          class="experience-item"
+        >
+          <h3>{{ item.title }}</h3>
+          <p class="meta">{{ item.period }}</p>
+          <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
+          <p v-if="item.result" class="result">成果：{{ item.result }}</p>
+          <ul>
+            <li v-for="bullet in item.bullets" :key="bullet">{{ bullet }}</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+
+    <section
+      v-for="(chunk, ci) in workChunks"
+      :key="'wk-' + ci"
+      class="page page-work"
+      :class="{ compact: ci > 0 }"
+    >
       <div class="decor decor-top" />
       <header class="page-header teal">
         <span class="header-icon">
@@ -212,11 +364,7 @@ function isExternalHttpHref(href: string): boolean {
         </span>
         <span>{{ resume.workSectionTitle }}</span>
       </header>
-      <article
-        v-for="item in resume.workExperiences.slice(0, 5)"
-        :key="item.title"
-        class="experience-item"
-      >
+      <article v-for="item in chunk" :key="item.title" class="experience-item">
         <h3>{{ item.title }}</h3>
         <p class="meta">{{ item.period }}</p>
         <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
@@ -225,85 +373,10 @@ function isExternalHttpHref(href: string): boolean {
           <li v-for="bullet in item.bullets" :key="bullet">{{ bullet }}</li>
         </ul>
       </article>
-      <span class="page-number">2</span>
+      <span class="page-number">{{ 2 + ci }}</span>
     </section>
 
-    <section class="page page-work">
-      <div class="decor decor-top" />
-      <header class="page-header teal">
-        <span class="header-icon">
-          <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
-          <span v-else>♟</span>
-        </span>
-        <span>{{ resume.workSectionTitle }}</span>
-      </header>
-      <article
-        v-for="item in resume.workExperiences.slice(5, 9)"
-        :key="item.title"
-        class="experience-item"
-      >
-        <h3>{{ item.title }}</h3>
-        <p class="meta">{{ item.period }}</p>
-        <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
-        <p v-if="item.result" class="result">成果：{{ item.result }}</p>
-        <ul>
-          <li v-for="bullet in item.bullets" :key="bullet">{{ bullet }}</li>
-        </ul>
-      </article>
-      <span class="page-number">3</span>
-    </section>
-
-    <section class="page page-work compact">
-      <div class="decor decor-top" />
-      <header class="page-header teal">
-        <span class="header-icon">
-          <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
-          <span v-else>♟</span>
-        </span>
-        <span>{{ resume.workSectionTitle }}</span>
-      </header>
-      <article
-        v-for="item in resume.workExperiences.slice(9, 12)"
-        :key="item.title"
-        class="experience-item"
-      >
-        <h3>{{ item.title }}</h3>
-        <p class="meta">{{ item.period }}</p>
-        <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
-        <p v-if="item.result" class="result">成果：{{ item.result }}</p>
-        <ul>
-          <li v-for="bullet in item.bullets" :key="bullet">{{ bullet }}</li>
-        </ul>
-      </article>
-      <span class="page-number">4</span>
-    </section>
-
-    <section class="page page-work compact">
-      <div class="decor decor-top" />
-      <header class="page-header teal">
-        <span class="header-icon">
-          <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
-          <span v-else>♟</span>
-        </span>
-        <span>{{ resume.workSectionTitle }}</span>
-      </header>
-      <article
-        v-for="item in resume.workExperiences.slice(12)"
-        :key="item.title"
-        class="experience-item"
-      >
-        <h3>{{ item.title }}</h3>
-        <p class="meta">{{ item.period }}</p>
-        <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
-        <p v-if="item.result" class="result">成果：{{ item.result }}</p>
-        <ul>
-          <li v-for="bullet in item.bullets" :key="bullet">{{ bullet }}</li>
-        </ul>
-      </article>
-      <span class="page-number">5</span>
-    </section>
-
-    <section class="page page-work compact">
+    <section class="page page-work compact page-early">
       <div class="decor decor-top" />
       <header class="page-header purple">
         <span class="header-icon">
@@ -321,7 +394,7 @@ function isExternalHttpHref(href: string): boolean {
           <li v-for="bullet in item.bullets" :key="bullet">{{ bullet }}</li>
         </ul>
       </article>
-      <span class="page-number">6</span>
+      <span class="page-number">{{ 2 + workChunks.length }}</span>
     </section>
 
     <section class="page page-certificates">
@@ -344,7 +417,7 @@ function isExternalHttpHref(href: string): boolean {
           <figcaption>{{ certificate.title }}</figcaption>
         </figure>
       </div>
-      <span class="page-number">7</span>
+      <span class="page-number">{{ 3 + workChunks.length }}</span>
     </section>
     </template>
   </component>
@@ -423,6 +496,30 @@ function isExternalHttpHref(href: string): boolean {
   break-after: page;
   page-break-after: always;
   font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.work-chunk-measure {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 210mm;
+  max-width: 100vw;
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  visibility: hidden;
+}
+
+.work-chunk-measure .work-chunk-probe.page {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  min-height: 297mm;
+  max-height: 297mm;
+  margin: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .page::after {
@@ -717,7 +814,7 @@ function isExternalHttpHref(href: string): boolean {
 }
 
 .compact .experience-item {
-  margin-bottom: 5.4mm;
+  margin-bottom: 4.8mm;
 }
 
 .experience-item h3 {
@@ -752,8 +849,8 @@ function isExternalHttpHref(href: string): boolean {
 .compact .experience-item li,
 .compact .experience-item .meta,
 .compact .experience-item .result {
-  font-size: 10.7pt;
-  line-height: 1.32;
+  font-size: 10.2pt;
+  line-height: 1.28;
 }
 
 .certificate-grid {
@@ -877,13 +974,26 @@ function isExternalHttpHref(href: string): boolean {
 
   .page {
     width: 210mm;
-    height: 296mm;
     min-height: 296mm;
     margin: 0;
     box-shadow: none;
     overflow: hidden;
     page-break-after: auto;
     break-after: auto;
+  }
+
+  /* 经历条与首条尽量同页；整块不再强制 avoid，改由 JS 按高度分包 */
+  .page-work:not(.page-early) > .page-header.teal {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .page::after,
+  .page-cover::before,
+  .cover-corner,
+  .decor-top,
+  .decor-left {
+    display: none;
   }
 
   .influence-block {

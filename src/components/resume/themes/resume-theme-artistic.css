@@ -1,5 +1,5 @@
 /**
- * 艺术主题：高对比黑白、粗黑标题条、侧栏技能圆点；打印保留对比度。
+ * 艺术主题：配色与装饰；**每页 A4 固定尺寸**以 `ResumeArtisticContent.vue` 中 `.page-artistic` 为准（宽 210mm，屏 297mm / 印 296mm 高）。
  */
 .resume-shell.theme-artistic {
   --art-ink: #0a0a0a;
