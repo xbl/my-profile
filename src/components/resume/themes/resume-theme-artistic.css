@@ -12,7 +12,7 @@
   --resume-muted: #e5e7eb;
   --resume-canvas: #f3f4f6;
   --resume-shell-radial: transparent;
-  --resume-page-elevation: 0 10px 28px rgba(0, 0, 0, 0.12);
+  --resume-page-elevation: 0 8px 24px rgba(0, 0, 0, 0.10);
 }
 
 .resume-shell.theme-artistic .page-artistic::after {

@@ -199,16 +199,17 @@ const workChunks = computed(() => {
 .artistic-root {
   display: contents;
 }
+
 .page-artistic {
   position: relative;
   width: 210mm;
-  min-height: 297mm;
+  height: 297mm;
   margin: 0 auto 24px;
-  padding: 12mm 14mm 14mm;
+  padding: 14mm 16mm 16mm;
   overflow: hidden;
-  color: #0a0a0a;
+  color: #1a1a1a;
   background: #fff;
-  box-shadow: var(--resume-page-elevation, 0 10px 28px rgba(0, 0, 0, 0.12));
+  box-shadow: var(--resume-page-elevation, 0 8px 24px rgba(0, 0, 0, 0.10));
   break-after: page;
   page-break-after: always;
   font-family:
@@ -221,24 +222,24 @@ const workChunks = computed(() => {
 }
 
 .page-artistic--cover {
-  padding: 0 14mm 12mm;
+  padding: 0 16mm 14mm;
 }
 
 .page-artistic--flow {
-  padding-top: 14mm;
+  padding-top: 16mm;
 }
 
 .artistic-hero {
   display: grid;
   grid-template-columns: 1fr 52mm;
-  gap: 8mm;
+  gap: 10mm;
   align-items: start;
-  margin: 0 0 7mm;
+  margin: 0 0 9mm;
 }
 
 .artistic-hero-text {
   position: relative;
-  padding-left: 5mm;
+  padding-left: 7mm;
 }
 
 .artistic-hero-rule {
@@ -246,27 +247,27 @@ const workChunks = computed(() => {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 2px;
+  width: 1.5px;
   background: #0a0a0a;
 }
 
 .artistic-name {
   margin: 0;
-  font-size: 26pt;
+  font-size: 28pt;
   font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: 0.08em;
+  line-height: 1.08;
+  letter-spacing: 0.06em;
   color: #0a0a0a;
 }
 
 .artistic-role {
-  margin: 2mm 0 0;
+  margin: 2.5mm 0 0;
   max-width: 52em;
-  font-size: 10.5pt;
+  font-size: 11pt;
   font-weight: 500;
-  line-height: 1.55;
+  line-height: 1.6;
   letter-spacing: 0.02em;
-  color: #1f1f1f;
+  color: #333;
 }
 
 .artistic-portrait {
@@ -276,6 +277,7 @@ const workChunks = computed(() => {
   min-height: 56mm;
   overflow: hidden;
   background: #fff;
+  border: 1px solid #e5e7eb;
 }
 
 .artistic-portrait img {
@@ -291,7 +293,7 @@ const workChunks = computed(() => {
 }
 
 .artistic-about-full {
-  margin: 0 0 8mm;
+  margin: 0 0 10mm;
 }
 
 .artistic-about-full .artistic-bar {
@@ -300,21 +302,21 @@ const workChunks = computed(() => {
 
 .artistic-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr);
-  gap: 0 10mm;
+  grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+  gap: 0 12mm;
   align-items: start;
 }
 
 .artistic-side {
-  padding-top: 5mm;
+  padding-top: 3mm;
 }
 
 .artistic-bar {
-  margin: 0 0 4mm;
-  padding: 2.2mm 5mm;
-  font-size: 9.5pt;
+  margin: 0 0 3.5mm;
+  padding: 1.8mm 5mm;
+  font-size: 9pt;
   font-weight: 800;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: #fff;
   background: #0a0a0a;
@@ -330,17 +332,17 @@ const workChunks = computed(() => {
 }
 
 .artistic-bar--solo {
-  margin-bottom: 6mm;
+  margin-bottom: 7mm;
 }
 
 .artistic-block + .artistic-block {
-  margin-top: 8mm;
+  margin-top: 9mm;
 }
 
 .artistic-influence-full {
-  margin-top: 9mm;
-  padding-top: 2mm;
-  border-top: 1px solid #e5e7eb;
+  margin-top: 10mm;
+  padding-top: 3mm;
+  border-top: 1px solid #d1d5db;
 }
 
 .artistic-influence-list {
@@ -350,13 +352,13 @@ const workChunks = computed(() => {
 }
 
 .artistic-influence-list li {
-  margin: 0 0 3.5mm;
+  margin: 0 0 4mm;
   padding: 0;
   font-size: 10.2pt;
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.55;
   text-align: justify;
-  color: #111827;
+  color: #1a1a1a;
 }
 
 .artistic-influence-list li:last-child {
@@ -367,13 +369,19 @@ const workChunks = computed(() => {
   margin: 0;
   font-size: 10.2pt;
   font-weight: 500;
-  line-height: 1.45;
+  line-height: 1.5;
   text-align: justify;
-  color: #111827;
+  color: #1a1a1a;
 }
 
 .artistic-exp + .artistic-exp {
-  margin-top: 6mm;
+  margin-top: 5mm;
+}
+
+.page-artistic--flow .artistic-exp + .artistic-exp {
+  margin-top: 7mm;
+  padding-top: 5mm;
+  border-top: 1px solid #e5e7eb;
 }
 
 .artistic-exp h3 {
@@ -381,6 +389,7 @@ const workChunks = computed(() => {
   font-size: 11.2pt;
   font-weight: 800;
   line-height: 1.25;
+  color: #0a0a0a;
 }
 
 .artistic-exp-meta {
@@ -388,7 +397,7 @@ const workChunks = computed(() => {
   font-size: 10pt;
   font-style: italic;
   font-weight: 500;
-  color: #4b5563;
+  color: #6b7280;
 }
 
 .artistic-exp-result {
@@ -396,20 +405,33 @@ const workChunks = computed(() => {
   font-size: 10pt;
   font-weight: 500;
   line-height: 1.38;
+  color: #333;
 }
 
 .artistic-exp-bullets {
   margin: 0;
-  padding: 0 0 0 4.5mm;
-  list-style: disc;
+  padding: 0;
+  list-style: none;
   font-size: 9.6pt;
   font-weight: 500;
-  line-height: 1.32;
-  color: #1f2937;
+  line-height: 1.38;
+  color: #333;
 }
 
 .artistic-exp-bullets li {
-  margin-bottom: 0.8mm;
+  position: relative;
+  padding-left: 4.5mm;
+  margin-bottom: 1mm;
+}
+
+.artistic-exp-bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 3.5px;
+  height: 3.5px;
+  background: #0a0a0a;
 }
 
 .artistic-contacts {
@@ -420,8 +442,8 @@ const workChunks = computed(() => {
 
 .artistic-contacts li {
   display: grid;
-  grid-template-columns: 9mm 1fr;
-  gap: 3mm;
+  grid-template-columns: 7.5mm 1fr;
+  gap: 3.5mm;
   align-items: start;
   margin-bottom: 3.5mm;
 }
@@ -429,44 +451,46 @@ const workChunks = computed(() => {
 .artistic-contact-icon {
   display: grid;
   place-items: center;
-  width: 9mm;
-  height: 9mm;
-  font-size: 11pt;
+  width: 7.5mm;
+  height: 7.5mm;
+  font-size: 9pt;
   line-height: 1;
-  color: #fff;
-  background: #0a0a0a;
+  color: #0a0a0a;
+  background: transparent;
+  border: 1.2px solid #0a0a0a;
 }
 
 .artistic-contact-body {
   display: flex;
   flex-direction: column;
-  gap: 0.6mm;
+  gap: 0.8mm;
   min-width: 0;
 }
 
 .artistic-contact-label {
   font-size: 9pt;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  color: #0a0a0a;
 }
 
 .artistic-contact-value {
   font-size: 9.2pt;
   font-weight: 500;
-  line-height: 1.3;
+  line-height: 1.35;
   word-break: break-word;
+  color: #333;
 }
 
 .artistic-link {
   color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
+  text-decoration: none;
 }
 
 .artistic-skills-wrap {
   display: flex;
   flex-direction: column;
-  gap: 5mm;
+  gap: 6mm;
 }
 
 .artistic-skill-group {
@@ -474,25 +498,37 @@ const workChunks = computed(() => {
 }
 
 .artistic-skill-group-title {
-  margin: 0 0 2mm;
+  margin: 0 0 2.5mm;
   font-size: 9.8pt;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: #0a0a0a;
 }
 
 .artistic-skill-list {
   margin: 0;
-  padding: 0 0 0 4.5mm;
-  list-style: disc;
+  padding: 0;
+  list-style: none;
   font-size: 10pt;
   font-weight: 500;
-  line-height: 1.42;
-  color: #1f2937;
+  line-height: 1.45;
+  color: #333;
 }
 
 .artistic-skill-list li {
-  margin: 0 0 1.6mm;
+  position: relative;
+  padding-left: 4.5mm;
+  margin: 0 0 2mm;
+}
+
+.artistic-skill-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 3.5px;
+  height: 3.5px;
+  background: #0a0a0a;
 }
 
 .artistic-skill-list li:last-child {
@@ -502,7 +538,7 @@ const workChunks = computed(() => {
 .artistic-cert-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4mm 5mm;
+  gap: 5mm 6mm;
 }
 
 .artistic-cert {
@@ -514,20 +550,26 @@ const workChunks = computed(() => {
   width: 100%;
   max-height: 52mm;
   object-fit: contain;
-  border: 1px solid #e5e7eb;
 }
 
 .artistic-cert figcaption {
-  margin-top: 1.5mm;
+  margin-top: 2mm;
   font-size: 8pt;
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.25;
+  color: #555;
 }
 
 @media screen and (max-width: 900px) {
   .page-artistic {
     width: min(100%, 210mm);
+    height: auto;
     min-height: auto;
+    padding: 10mm 12mm;
+  }
+
+  .page-artistic--cover {
+    padding: 0 12mm 10mm;
   }
 
   .artistic-hero {
@@ -562,15 +604,28 @@ const workChunks = computed(() => {
     text-decoration: none;
   }
 
+  .artistic-portrait {
+    border: none;
+  }
+
+  .artistic-contact-icon {
+    border: 1px solid #000;
+  }
+
   .page-artistic {
     width: 210mm;
     height: 296mm;
     min-height: 296mm;
     margin: 0;
+    padding: 14mm 16mm 16mm;
     box-shadow: none;
     overflow: hidden;
     page-break-after: auto;
     break-after: auto;
+  }
+
+  .page-artistic--cover {
+    padding: 0 16mm 14mm;
   }
 
   .page-artistic--last {
