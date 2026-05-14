@@ -1,0 +1,181 @@
+/**
+ * 简线主题：参考常见简约商务 PDF 简历 — 顶栏色带、方角头像、左对齐封面信息、
+ * 去装饰圆、区块标题下划线 + 经历页左侧色条；不绑定任何具体简历文案。
+ */
+.resume-shell.theme-modular {
+  --resume-teal: #1a365d;
+  --resume-green: #2b6cb0;
+  --resume-purple: #4a5568;
+  --resume-ink: #1a202c;
+  --resume-muted: #edf2f7;
+  --resume-canvas: #e9ecef;
+  --resume-shell-radial: rgba(26, 54, 93, 0.05);
+  --resume-page-elevation: 0 8px 28px rgba(15, 23, 42, 0.09);
+}
+
+.resume-shell.theme-modular .cover-corner {
+  display: none;
+}
+
+.resume-shell.theme-modular .page.page-cover {
+  grid-template-columns: 34% 66%;
+  column-gap: 12mm;
+  padding: 14mm 15mm 11mm;
+  box-shadow:
+    inset 0 3.5mm 0 0 var(--resume-teal),
+    var(--resume-page-elevation);
+}
+
+.resume-shell.theme-modular .page-cover::before {
+  display: none;
+}
+
+.resume-shell.theme-modular .page::after {
+  opacity: 0;
+}
+
+.resume-shell.theme-modular .decor {
+  display: none;
+}
+
+.resume-shell.theme-modular .portrait-frame {
+  width: 30mm;
+  height: 36mm;
+  margin: 0 0 5mm;
+  border-radius: 2mm;
+  border-width: 1px;
+  border-color: color-mix(in srgb, var(--resume-teal) 45%, #cbd5e1);
+}
+
+.resume-shell.theme-modular .profile-panel h1 {
+  text-align: left;
+  font-size: 22pt;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.resume-shell.theme-modular .headline {
+  text-align: left;
+  font-size: 12.5pt;
+  font-weight: 800;
+  color: var(--resume-green);
+}
+
+.resume-shell.theme-modular .summary {
+  text-align: left;
+  font-size: 10.8pt;
+  line-height: 1.32;
+  color: color-mix(in srgb, var(--resume-ink) 88%, #fff);
+}
+
+.resume-shell.theme-modular .contact-list {
+  gap: 2.4mm;
+}
+
+.resume-shell.theme-modular .contact-icon {
+  border-radius: 1.2mm;
+  background: var(--resume-teal);
+}
+
+.resume-shell.theme-modular .page-work,
+.resume-shell.theme-modular .page-certificates {
+  padding: 13mm 15mm 12mm;
+}
+
+.resume-shell.theme-modular .skill-block + .skill-block {
+  margin-top: 6.5mm;
+}
+
+.resume-shell.theme-modular .skill-block h2,
+.resume-shell.theme-modular .influence-block h2 {
+  display: flex;
+  align-items: center;
+  gap: 3mm;
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 3.8mm;
+  padding: 0 0 2mm;
+  color: var(--resume-ink);
+  background: transparent;
+  border-radius: 0;
+  border-bottom: 2px solid var(--resume-green);
+  font-size: 12.2pt;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.resume-shell.theme-modular .influence-block h2 {
+  border-bottom-color: var(--resume-purple);
+}
+
+.resume-shell.theme-modular .influence-block {
+  margin-top: 5mm;
+}
+
+.resume-shell.theme-modular .skill-block li::before,
+.resume-shell.theme-modular .influence-block li::before,
+.resume-shell.theme-modular .experience-item li::before {
+  content: "";
+  top: 0.52em;
+  left: 0.8mm;
+  width: 1.5mm;
+  height: 1.5mm;
+  border-radius: 0.35mm;
+  background: var(--resume-green);
+  font-weight: 400;
+}
+
+.resume-shell.theme-modular .influence-block li::before {
+  background: var(--resume-purple);
+}
+
+.resume-shell.theme-modular .page-header {
+  display: flex;
+  align-items: center;
+  gap: 3.5mm;
+  min-width: 0;
+  width: 100%;
+  margin-bottom: 6mm;
+  padding: 2.4mm 5mm 2.4mm 5mm;
+  border-radius: 0;
+  border-left: 3mm solid var(--resume-teal);
+  border-bottom: 1px solid color-mix(in srgb, var(--resume-ink) 14%, transparent);
+  background: color-mix(in srgb, var(--resume-muted) 55%, #fff);
+  color: var(--resume-ink);
+  font-size: 12.8pt;
+  font-weight: 800;
+}
+
+.resume-shell.theme-modular .page-header.teal {
+  border-left-color: var(--resume-teal);
+  background: color-mix(in srgb, var(--resume-teal) 7%, #fff);
+}
+
+.resume-shell.theme-modular .page-header.purple {
+  border-left-color: var(--resume-purple);
+  background: color-mix(in srgb, var(--resume-purple) 9%, #fff);
+}
+
+.resume-shell.theme-modular .experience-item {
+  margin-bottom: 5.4mm;
+}
+
+.resume-shell.theme-modular .compact .experience-item {
+  margin-bottom: 4.5mm;
+}
+
+.resume-shell.theme-modular .experience-item h3 {
+  color: var(--resume-teal);
+}
+
+.resume-shell.theme-modular .page-number {
+  font-size: 10pt;
+  color: color-mix(in srgb, var(--resume-ink) 45%, #fff);
+  font-weight: 600;
+}
+
+@media print {
+  .resume-shell.theme-modular .page.page-cover {
+    box-shadow: inset 0 3.5mm 0 0 var(--resume-teal);
+  }
+}

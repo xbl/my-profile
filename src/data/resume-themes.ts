@@ -1,4 +1,4 @@
-export type ResumeThemeId = 'classic' | 'executive' | 'folio' | 'artistic'
+export type ResumeThemeId = 'classic' | 'executive' | 'folio' | 'artistic' | 'modular'
 
 /** 旧版主题 id，读取 URL / localStorage 时自动映射为 `folio` */
 export const LEGACY_THEME_SPECTRUM = 'spectrum' as const
@@ -22,6 +22,11 @@ export const RESUME_THEMES: readonly {
     label: '艺术',
     hint: '黑白高对比：粗黑标题条、侧栏技能圆点、头像竖版灰度',
   },
+  {
+    id: 'modular',
+    label: '简线',
+    hint: '简约商务：顶栏色带、方角头像、标题下划线、经历页左侧色条',
+  },
 ] as const
 
 export function isResumeThemeId(value: string): value is ResumeThemeId {
@@ -29,7 +34,8 @@ export function isResumeThemeId(value: string): value is ResumeThemeId {
     value === 'classic' ||
     value === 'executive' ||
     value === 'folio' ||
-    value === 'artistic'
+    value === 'artistic' ||
+    value === 'modular'
   )
 }
 

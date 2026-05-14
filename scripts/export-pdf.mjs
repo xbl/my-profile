@@ -18,7 +18,7 @@ const PORT = 4179
 const BASE = `http://127.0.0.1:${PORT}`
 const themeRaw = (process.env.RESUME_THEME ?? 'classic').trim().toLowerCase()
 const normalized = themeRaw === 'spectrum' ? 'folio' : themeRaw
-const resumeTheme = ['classic', 'executive', 'folio', 'artistic'].includes(normalized)
+const resumeTheme = ['classic', 'executive', 'folio', 'artistic', 'modular'].includes(normalized)
   ? normalized
   : 'classic'
 

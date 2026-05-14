@@ -45,7 +45,7 @@ npx playwright install chromium
 
 ## 简历主题
 
-页顶可切换三种主题（选择会写入浏览器 `localStorage`）：
+页顶可切换多种主题（选择会写入浏览器 `localStorage`）：
 
 | 主题     | 说明                                       |
 | -------- | ------------------------------------------ |
@@ -53,8 +53,9 @@ npx playwright install chromium
 | **商务** | 冷灰配色；侧栏略窄、内边距更紧，经历条目间距略压缩 |
 | **对开** | 双栏：左 `--folio-base` 侧栏；右侧技能 + 影响力（色均由该基色派生） |
 | **艺术** | 高对比黑白：粗黑标题条、侧栏技能圆点、头像竖版灰度；版式独立组件 |
+| **简线** | 简约商务：顶栏色带、方角头像、左对齐信息、标题下划线、经历页左侧色条 |
 
-带参打开（优先级高于 `localStorage`）：`/?theme=folio` 或 `/?theme=executive`（`classic` / `artistic` 同理）。旧参数 `?theme=spectrum` 会自动映射为 `folio`。
+带参打开（优先级高于 `localStorage`）：`/?theme=folio` 或 `/?theme=executive`（`classic` / `artistic` / `modular` 同理）。旧参数 `?theme=spectrum` 会自动映射为 `folio`。
 
 导出 PDF 时若需固定主题，可设置环境变量后执行 `export:pdf:only`：
 
@@ -62,7 +63,7 @@ npx playwright install chromium
 RESUME_THEME=executive npm run export:pdf:only
 ```
 
-有效值：`classic`、`executive`、`folio`、`artistic`（`spectrum` 视为 `folio`）。
+有效值：`classic`、`executive`、`folio`、`artistic`、`modular`（`spectrum` 视为 `folio`）。
 
 ## 导出 PDF
 
