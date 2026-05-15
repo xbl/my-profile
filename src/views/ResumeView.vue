@@ -1061,14 +1061,6 @@ onBeforeUnmount(() => {
     page-break-after: avoid;
   }
 
-  .page::after,
-  .page-cover::before,
-  .cover-corner,
-  .decor-top,
-  .decor-left {
-    display: none;
-  }
-
   .influence-block {
     grid-column: 1 / -1;
   }

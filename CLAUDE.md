@@ -61,7 +61,7 @@ Theme IDs and labels are defined in `src/data/resume-themes.ts`. Legacy `spectru
 
 - **Artistic**（`ResumeArtisticContent.vue` 的 `.page-artistic`）：**强制 A4** — `width: 210mm`，屏 `height/min/max: 297mm`，打印 `296mm`；`box-sizing: border-box`；封面与续页内用 `.artistic-cover-body` / `.artistic-flow-body` 在屏上 `overflow-y: auto`，打印 `overflow: hidden`，避免单页在视觉上「撑破」纸张。
 
-- Decorative pseudo-elements (`.page::after`, `.cover-corner`, `.decor-top`, etc.) are hidden in print via `display: none` where applicable.
+- Decorative geometry (`.page::after`, `.cover-corner`, `.page-cover::before`, `.decor-top` / `.decor-left`) **renders in print/PDF** so Playwright export matches on-screen layout (`printBackground: true` in `scripts/export-pdf.mjs`).
 
 ### Work Experience Pagination
 
@@ -90,9 +90,9 @@ Theme IDs and labels are defined in `src/data/resume-themes.ts`. Legacy `spectru
 5. Calls `page.pdf()` with A4, `preferCSSPageSize: true`, zero margins
 
 The `@media print` rules in both `ResumeView.vue` and `ResumeArtisticContent.vue` handle:
-- Removing box-shadows and background colors
+- Removing box-shadows on pages (flat paper)
 - Classic/folio: `min-height: 296mm` on `.page`; Artistic: **fixed** `height/min/max: 296mm` on `.page-artistic`
-- Hiding the theme switcher bar and decorative pseudo-elements
+- Hiding the theme switcher bar
 - Removing link underlines
 
 ### Key TypeScript Types (`src/types/resume.ts`)
