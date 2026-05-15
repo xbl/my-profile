@@ -61,8 +61,10 @@ const summaryParagraphs = computed(() =>
 function companyFromExperience(ex: ResumeExperience): { company: string; period: string; fullTitle: string } {
   const title = ex.title.trim();
   const m = title.match(/^(.+?)\s*[–—\-]\s*(.+)$/);
-  if (m) {
-    return { company: m[1].trim(), period: ex.period, fullTitle: title };
+  const left = m?.[1];
+  const right = m?.[2];
+  if (left != null && right != null) {
+    return { company: left.trim(), period: ex.period, fullTitle: title };
   }
   return { company: title, period: ex.period, fullTitle: title };
 }
