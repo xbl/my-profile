@@ -25,7 +25,7 @@ export const RESUME_THEMES: readonly {
   {
     id: 'modular',
     label: '简线',
-    hint: '简约商务：顶栏色带、方角头像、标题下划线、经历页左侧色条',
+    hint: '双栏 + 顶栏头像、技能标签、工作经历时间线；独立版式（ResumeModularContent）',
   },
 ] as const
 

@@ -8,6 +8,7 @@ import {
   type ResumeThemeId,
 } from "@/data/resume-themes";
 import ResumeArtisticContent from "@/components/resume/ResumeArtisticContent.vue";
+import ResumeModularContent from "@/components/resume/ResumeModularContent.vue";
 import { RESUME_THEME_SHELLS } from "@/components/resume/themes/themeShells";
 import { fallbackChunks, packWorkExperienceChunks } from "@/utils/packResumeWorkChunks";
 import { isInfluenceGroup } from "@/types/resume";
@@ -195,8 +196,79 @@ onBeforeUnmount(() => {
       </button>
     </div>
 
-    <ResumeArtisticContent v-if="themeId === 'artistic'" />
-    <template v-else>
+    <ResumeModularContent v-if="themeId === 'modular'" :work-chunks="workChunks" />
+    <ResumeArtisticContent v-else-if="themeId === 'artistic'" />
+    <template v-if="themeId !== 'artistic'">
+      <div class="work-chunk-measure" aria-hidden="true">
+        <div ref="probeLimitFirst" class="page page-work work-chunk-probe">
+        <div class="decor decor-top" />
+        <header class="page-header teal">
+          <span class="header-icon">
+            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+            <span v-else>♟</span>
+          </span>
+          <span>{{ resume.workSectionTitle }}</span>
+        </header>
+      </div>
+      <div ref="probeLimitRest" class="page page-work compact work-chunk-probe">
+        <div class="decor decor-top" />
+        <header class="page-header teal">
+          <span class="header-icon">
+            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+            <span v-else>♟</span>
+          </span>
+          <span>{{ resume.workSectionTitle }}</span>
+        </header>
+      </div>
+      <div ref="probeStackFull" class="page page-work work-chunk-probe">
+        <div class="decor decor-top" />
+        <header class="page-header teal">
+          <span class="header-icon">
+            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+            <span v-else>♟</span>
+          </span>
+          <span>{{ resume.workSectionTitle }}</span>
+        </header>
+        <article
+          v-for="item in resume.workExperiences"
+          :key="'mf-' + item.title"
+          class="experience-item"
+        >
+          <h3>{{ item.title }}</h3>
+          <p class="meta">{{ item.period }}</p>
+          <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
+          <p v-if="item.result" class="result">成果：{{ item.result }}</p>
+          <ul>
+            <li v-for="bullet in item.bullets" :key="bullet">{{ bullet }}</li>
+          </ul>
+        </article>
+      </div>
+      <div ref="probeStackCompact" class="page page-work compact work-chunk-probe">
+        <div class="decor decor-top" />
+        <header class="page-header teal">
+          <span class="header-icon">
+            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
+            <span v-else>♟</span>
+          </span>
+          <span>{{ resume.workSectionTitle }}</span>
+        </header>
+        <article
+          v-for="item in resume.workExperiences"
+          :key="'mc-' + item.title"
+          class="experience-item"
+        >
+          <h3>{{ item.title }}</h3>
+          <p class="meta">{{ item.period }}</p>
+          <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
+          <p v-if="item.result" class="result">成果：{{ item.result }}</p>
+          <ul>
+            <li v-for="bullet in item.bullets" :key="bullet">{{ bullet }}</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+
+    <template v-if="themeId !== 'modular'">
     <section class="page page-cover">
       <div class="cover-corner" />
       <aside class="profile-panel">
@@ -300,75 +372,6 @@ onBeforeUnmount(() => {
       <span class="page-number">1</span>
     </section>
 
-    <div class="work-chunk-measure" aria-hidden="true">
-      <div ref="probeLimitFirst" class="page page-work work-chunk-probe">
-        <div class="decor decor-top" />
-        <header class="page-header teal">
-          <span class="header-icon">
-            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
-            <span v-else>♟</span>
-          </span>
-          <span>{{ resume.workSectionTitle }}</span>
-        </header>
-      </div>
-      <div ref="probeLimitRest" class="page page-work compact work-chunk-probe">
-        <div class="decor decor-top" />
-        <header class="page-header teal">
-          <span class="header-icon">
-            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
-            <span v-else>♟</span>
-          </span>
-          <span>{{ resume.workSectionTitle }}</span>
-        </header>
-      </div>
-      <div ref="probeStackFull" class="page page-work work-chunk-probe">
-        <div class="decor decor-top" />
-        <header class="page-header teal">
-          <span class="header-icon">
-            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
-            <span v-else>♟</span>
-          </span>
-          <span>{{ resume.workSectionTitle }}</span>
-        </header>
-        <article
-          v-for="item in resume.workExperiences"
-          :key="'mf-' + item.title"
-          class="experience-item"
-        >
-          <h3>{{ item.title }}</h3>
-          <p class="meta">{{ item.period }}</p>
-          <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
-          <p v-if="item.result" class="result">成果：{{ item.result }}</p>
-          <ul>
-            <li v-for="bullet in item.bullets" :key="bullet">{{ bullet }}</li>
-          </ul>
-        </article>
-      </div>
-      <div ref="probeStackCompact" class="page page-work compact work-chunk-probe">
-        <div class="decor decor-top" />
-        <header class="page-header teal">
-          <span class="header-icon">
-            <img v-if="headerWorkSrc" class="header-icon-img" :src="headerWorkSrc" alt="" />
-            <span v-else>♟</span>
-          </span>
-          <span>{{ resume.workSectionTitle }}</span>
-        </header>
-        <article
-          v-for="item in resume.workExperiences"
-          :key="'mc-' + item.title"
-          class="experience-item"
-        >
-          <h3>{{ item.title }}</h3>
-          <p class="meta">{{ item.period }}</p>
-          <p v-if="item.role" class="meta">担任：{{ item.role }}</p>
-          <p v-if="item.result" class="result">成果：{{ item.result }}</p>
-          <ul>
-            <li v-for="bullet in item.bullets" :key="bullet">{{ bullet }}</li>
-          </ul>
-        </article>
-      </div>
-    </div>
-
     <section
       v-for="(chunk, ci) in workChunks"
       :key="'wk-' + ci"
@@ -438,6 +441,7 @@ onBeforeUnmount(() => {
       </div>
       <span class="page-number">{{ 3 + workChunks.length }}</span>
     </section>
+    </template>
     </template>
   </component>
 </template>

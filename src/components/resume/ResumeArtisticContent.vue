@@ -263,14 +263,14 @@ const workChunks = computed(() => {
   flex-direction: column;
   gap: 7mm;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .artistic-flow-body {
   flex: 1;
   min-height: 0;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .artistic-flow-body--certs {
@@ -281,7 +281,7 @@ const workChunks = computed(() => {
 .artistic-flow-body--certs .artistic-cert-grid {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .artistic-hero {
@@ -368,7 +368,7 @@ const workChunks = computed(() => {
 .artistic-main,
 .artistic-side {
   min-height: 0;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .artistic-side {

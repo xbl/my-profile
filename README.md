@@ -53,7 +53,7 @@ npx playwright install chromium
 | **商务** | 冷灰配色；侧栏略窄、内边距更紧，经历条目间距略压缩 |
 | **对开** | 双栏：左 `--folio-base` 侧栏；右侧技能 + 影响力（色均由该基色派生） |
 | **艺术** | 高对比黑白：粗黑标题条、侧栏技能圆点、头像竖版灰度；版式独立组件 |
-| **简线** | 简约商务：顶栏色带、方角头像、左对齐信息、标题下划线、经历页左侧色条 |
+| **简线** | 顶栏 + 双栏封面、技能标签、工作经历时间线；独立组件 `ResumeModularContent` |
 
 带参打开（优先级高于 `localStorage`）：`/?theme=folio` 或 `/?theme=executive`（`classic` / `artistic` / `modular` 同理）。旧参数 `?theme=spectrum` 会自动映射为 `folio`。
 

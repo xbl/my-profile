@@ -1,0 +1,11 @@
+---
+description: Resume themes must not show scrollbars inside A4 pages
+globs: src/components/resume/**/*.vue
+alwaysApply: false
+---
+
+# Resume layout — no scrollbars
+
+- **简线（`ResumeModularContent.vue`）与艺术（`ResumeArtisticContent.vue`）** 中，单页 A4 区域的内层容器（双栏列、`.modular-flow-body` / `.artistic-flow-body`、证书栅格等）必须使用 **`overflow-y: hidden`**（可与 `overflow-x: hidden` 并用），**禁止**使用 `overflow-y: auto` 或会稳定出现滚动条的 `overflow: auto`。
+- 超长内容由固定页高裁切；若内容装不下，应通过**减字、缩小字号、拆页或数据分包**解决，而不是在页内滚动。
+- 打印样式可继续用 `overflow: hidden !important` 加固，但屏上样式已与「无滚动条」一致，避免屏上 PDF 预览出现滚动条。

@@ -40,7 +40,8 @@ These variables are consumed by `ResumeView.vue`'s scoped styles and the theme's
 
 | Theme | Content component | Layout |
 |---|---|---|
-| classic, executive, folio, modular | Shared template inside `ResumeView.vue` (8-page layout with cover portrait + work/early/cert pages) | CSS overrides adjust spacing/colors |
+| classic, executive, folio | Shared template inside `ResumeView.vue` (8-page layout with cover portrait + work/early/cert pages) | CSS overrides adjust spacing/colors |
+| modular | `ResumeModularContent.vue`（顶栏 + 双栏封面 + 时间线经历 + 证书；`workChunks` 仍由 `ResumeView` 测量） | `resume-theme-modular.css` 仅 `--resume-*` 变量 |
 | artistic | `ResumeArtisticContent.vue` (completely independent component) | Own multi-page layout, no shared template |
 
 **Theme shells are mapped** in `src/components/resume/themes/themeShells.ts` — `RESUME_THEME_SHELLS` record keyed by `ResumeThemeId`. `ResumeView.vue` uses `<component :is="themeShell">` to switch shells dynamically.
@@ -57,9 +58,13 @@ Theme IDs and labels are defined in `src/data/resume-themes.ts`. Legacy `spectru
 
 ### Page Layout Constraints
 
-- **Classic / executive / folio / modular**（`ResumeView.vue` 的 `.page`）：屏上 `min-height: 297mm` 可增高；打印 `min-height: 296mm`，Inspire 经历由 JS 按可视高度分包（见下节）。`modular`（简线）为简约商务风：顶栏色带（`inset box-shadow`）、方角头像、封面左对齐、标题下划线、经历页左侧色条（见 `resume-theme-modular.css`）。
+- **简历页面不出现滚动条**（屏上预览与组件样式一致）：`ResumeModularContent.vue`、`ResumeArtisticContent.vue` 内分页容器、双栏与时间线体使用 `overflow-y: hidden`（必要时内容由固定 A4 裁切）；勿改回 `overflow-y: auto`。详见 `.cursor/rules/resume-no-scrollbars.mdc`。
 
-- **Artistic**（`ResumeArtisticContent.vue` 的 `.page-artistic`）：**强制 A4** — `width: 210mm`，屏 `height/min/max: 297mm`，打印 `296mm`；`box-sizing: border-box`；封面与续页内用 `.artistic-cover-body` / `.artistic-flow-body` 在屏上 `overflow-y: auto`，打印 `overflow: hidden`，避免单页在视觉上「撑破」纸张。
+- **Classic / executive / folio**（`ResumeView.vue` 的 `.page`）：屏上 `min-height: 297mm` 可增高；打印 `min-height: 296mm`，Inspire 经历由 JS 按可视高度分包（见下节）。
+
+- **Modular（简线）**（`ResumeModularContent.vue`）：独立多页；封面为顶栏 + 双栏（**左**：个人总结、公司经历、影响力；**右**：基本信息、技能标签）；经历与早期为**左侧竖线 + 节点圆点**时间线；`workChunks` 与经典主题同源（隐藏测量区仍在 `ResumeView.vue`）。主题色见 `resume-theme-modular.css` 中 `--resume-*`。
+
+- **Artistic**（`ResumeArtisticContent.vue` 的 `.page-artistic`）：**强制 A4** — `width: 210mm`，屏 `height/min/max: 297mm`，打印 `296mm`；`box-sizing: border-box`；封面与续页内层与双栏均为 `overflow-y: hidden`，与简线一致、避免滚动条。
 
 - Decorative geometry (`.page::after`, `.cover-corner`, `.page-cover::before`, `.decor-top` / `.decor-left`) **renders in print/PDF** so Playwright export matches on-screen layout (`printBackground: true` in `scripts/export-pdf.mjs`).
 
