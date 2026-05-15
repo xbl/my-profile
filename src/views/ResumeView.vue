@@ -2,12 +2,12 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
 import { resume } from "@/data/resume";
 import {
+  LEGACY_THEME_ARTISTIC,
   normalizeThemeParam,
   RESUME_THEME_STORAGE_KEY,
   RESUME_THEMES,
   type ResumeThemeId,
 } from "@/data/resume-themes";
-import ResumeArtisticContent from "@/components/resume/ResumeArtisticContent.vue";
 import ResumeModularContent from "@/components/resume/ResumeModularContent.vue";
 import { RESUME_THEME_SHELLS } from "@/components/resume/themes/themeShells";
 import { fallbackChunks, packWorkExperienceChunks } from "@/utils/packResumeWorkChunks";
@@ -19,12 +19,22 @@ const themeShell = computed(() => RESUME_THEME_SHELLS[themeId.value]);
 
 onMounted(() => {
   try {
+    if (localStorage.getItem(RESUME_THEME_STORAGE_KEY) === LEGACY_THEME_ARTISTIC) {
+      localStorage.setItem(RESUME_THEME_STORAGE_KEY, "classic");
+    }
+  } catch {
+    /* ignore */
+  }
+  try {
     const params = new URLSearchParams(window.location.search);
     const q = normalizeThemeParam(params.get("theme"));
     if (q) {
       themeId.value = q;
       if (params.get("theme") === "spectrum") {
         localStorage.setItem(RESUME_THEME_STORAGE_KEY, "folio");
+      }
+      if (params.get("theme") === LEGACY_THEME_ARTISTIC) {
+        localStorage.setItem(RESUME_THEME_STORAGE_KEY, "classic");
       }
     } else {
       const raw = normalizeThemeParam(localStorage.getItem(RESUME_THEME_STORAGE_KEY));
@@ -50,9 +60,7 @@ watch(themeId, (id) => {
   } catch {
     /* ignore */
   }
-  if (id !== "artistic") {
-    void nextTick(() => void recalcWorkChunks());
-  }
+  void nextTick(() => void recalcWorkChunks());
 });
 
 function setTheme(id: ResumeThemeId) {
@@ -197,9 +205,7 @@ onBeforeUnmount(() => {
     </div>
 
     <ResumeModularContent v-if="themeId === 'modular'" :work-chunks="workChunks" />
-    <ResumeArtisticContent v-else-if="themeId === 'artistic'" />
-    <template v-if="themeId !== 'artistic'">
-      <div class="work-chunk-measure" aria-hidden="true">
+    <div class="work-chunk-measure" aria-hidden="true">
         <div ref="probeLimitFirst" class="page page-work work-chunk-probe">
         <div class="decor decor-top" />
         <header class="page-header teal">
@@ -441,7 +447,6 @@ onBeforeUnmount(() => {
       </div>
       <span class="page-number">{{ 3 + workChunks.length }}</span>
     </section>
-    </template>
     </template>
   </component>
 </template>

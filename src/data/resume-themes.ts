@@ -1,7 +1,10 @@
-export type ResumeThemeId = 'classic' | 'executive' | 'folio' | 'artistic' | 'modular'
+export type ResumeThemeId = 'classic' | 'executive' | 'folio' | 'modular'
 
 /** 旧版主题 id，读取 URL / localStorage 时自动映射为 `folio` */
 export const LEGACY_THEME_SPECTRUM = 'spectrum' as const
+
+/** 已移除的艺术主题，读取 URL / localStorage 时映射为 `classic` */
+export const LEGACY_THEME_ARTISTIC = 'artistic' as const
 
 export const RESUME_THEME_STORAGE_KEY = 'my-profile-resume-theme'
 
@@ -18,11 +21,6 @@ export const RESUME_THEMES: readonly {
     hint: '双栏式：左深侧栏；技能与影响力同在右侧，色系统一自 --folio-base',
   },
   {
-    id: 'artistic',
-    label: '艺术',
-    hint: '黑白高对比：粗黑标题条、侧栏技能圆点、头像竖版灰度',
-  },
-  {
     id: 'modular',
     label: '简线',
     hint: '双栏 + 顶栏头像、技能标签、工作经历时间线；独立版式（ResumeModularContent）',
@@ -34,7 +32,6 @@ export function isResumeThemeId(value: string): value is ResumeThemeId {
     value === 'classic' ||
     value === 'executive' ||
     value === 'folio' ||
-    value === 'artistic' ||
     value === 'modular'
   )
 }
@@ -43,6 +40,7 @@ export function isResumeThemeId(value: string): value is ResumeThemeId {
 export function normalizeThemeParam(value: string | null | undefined): ResumeThemeId | null {
   if (!value) return null
   if (value === LEGACY_THEME_SPECTRUM) return 'folio'
+  if (value === LEGACY_THEME_ARTISTIC) return 'classic'
   if (isResumeThemeId(value)) return value
   return null
 }

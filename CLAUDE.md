@@ -26,7 +26,7 @@ No router — single page app. Resume data is hardcoded in `src/data/resume.ts` 
 
 ### Theme System
 
-Five themes: `classic`, `executive`, `folio`, `artistic`, `modular`. Theme is persisted to `localStorage` (`my-profile-resume-theme`) and can be overridden via `?theme=` query param.
+Four themes: `classic`, `executive`, `folio`, `modular`. Theme is persisted to `localStorage` (`my-profile-resume-theme`) and can be overridden via `?theme=` query param. Legacy URL/storage values `spectrum` → `folio`, `artistic` → `classic` (see `normalizeThemeParam` in `src/data/resume-themes.ts`).
 
 **Theme shell + CSS variable bridge**:
 
@@ -36,17 +36,16 @@ Each theme has a pair of files in `src/components/resume/themes/`:
 
 These variables are consumed by `ResumeView.vue`'s scoped styles and the theme's own content component.
 
-**Two rendering paths** (in `ResumeView.vue` line 119):
+**Two rendering paths** (in `ResumeView.vue`):
 
 | Theme | Content component | Layout |
 |---|---|---|
 | classic, executive, folio | Shared template inside `ResumeView.vue` (8-page layout with cover portrait + work/early/cert pages) | CSS overrides adjust spacing/colors |
 | modular | `ResumeModularContent.vue`（顶栏 + 双栏封面 + 时间线经历 + 证书；`workChunks` 仍由 `ResumeView` 测量） | `resume-theme-modular.css` 仅 `--resume-*` 变量 |
-| artistic | `ResumeArtisticContent.vue` (completely independent component) | Own multi-page layout, no shared template |
 
 **Theme shells are mapped** in `src/components/resume/themes/themeShells.ts` — `RESUME_THEME_SHELLS` record keyed by `ResumeThemeId`. `ResumeView.vue` uses `<component :is="themeShell">` to switch shells dynamically.
 
-Theme IDs and labels are defined in `src/data/resume-themes.ts`. Legacy `spectrum` maps to `folio`.
+Theme IDs and labels are defined in `src/data/resume-themes.ts`. Legacy: `spectrum` → `folio`; removed theme `artistic` → `classic`.
 
 ### CSS Strategy
 
@@ -54,17 +53,14 @@ Theme IDs and labels are defined in `src/data/resume-themes.ts`. Legacy `spectru
 - `src/assets/main.css` — `#app` and link styles
 - `ResumeView.vue` scoped styles — shared page layout for classic/executive/folio (A4 pages, `.page-cover`, `.page-work`, `.page-certificates`)
 - Theme CSS files — color variables only (mostly); executive/folio also override layout variables
-- `ResumeArtisticContent.vue` scoped styles — self-contained art-theme layout
 
 ### Page Layout Constraints
 
-- **简历页面不出现滚动条**（屏上预览与组件样式一致）：`ResumeModularContent.vue`、`ResumeArtisticContent.vue` 内分页容器、双栏与时间线体使用 `overflow-y: hidden`（必要时内容由固定 A4 裁切）；勿改回 `overflow-y: auto`。详见 `.cursor/rules/resume-no-scrollbars.mdc`。
+- **简历页面不出现滚动条**（屏上预览与组件样式一致）：`ResumeModularContent.vue` 内分页容器、双栏与时间线体使用 `overflow-y: hidden`（必要时内容由固定 A4 裁切）；勿改回 `overflow-y: auto`。详见 `.cursor/rules/resume-no-scrollbars.mdc`。
 
 - **Classic / executive / folio**（`ResumeView.vue` 的 `.page`）：屏上 `min-height: 297mm` 可增高；打印 `min-height: 296mm`，Inspire 经历由 JS 按可视高度分包（见下节）。
 
-- **Modular（简线）**（`ResumeModularContent.vue`）：独立多页；封面为顶栏 + 双栏（**左**：个人总结、公司经历、影响力；**右**：基本信息、技能标签）；经历与早期为**左侧竖线 + 节点圆点**时间线；`workChunks` 与经典主题同源（隐藏测量区仍在 `ResumeView.vue`）。主题色见 `resume-theme-modular.css` 中 `--resume-*`。
-
-- **Artistic**（`ResumeArtisticContent.vue` 的 `.page-artistic`）：**强制 A4** — `width: 210mm`，屏 `height/min/max: 297mm`，打印 `296mm`；`box-sizing: border-box`；封面与续页内层与双栏均为 `overflow-y: hidden`，与简线一致、避免滚动条。
+- **Modular（简线）**（`ResumeModularContent.vue`）：独立多页；封面为顶栏 + 双栏（**左**：个人总结、公司经历、影响力；**右**：基本信息、技能标签）；经历与早期为**左侧竖线 + 节点圆点**时间线；`workChunks` 与经典主题同源（隐藏测量区仍在 `ResumeView.vue`）。主题色见 `resume-theme-modular.css` 中 `--resume-*`；**强制 A4** 单页固定高、无页内滚动条。
 
 - Decorative geometry (`.page::after`, `.cover-corner`, `.page-cover::before`, `.decor-top` / `.decor-left`) **renders in print/PDF** so Playwright export matches on-screen layout (`printBackground: true` in `scripts/export-pdf.mjs`).
 
@@ -83,8 +79,6 @@ Theme IDs and labels are defined in `src/data/resume-themes.ts`. Legacy `spectru
 
 - **Section title placement (PDF / print)**：每个 Inspire chunk 仍各自以 teal `workSectionTitle` 开头；早期页 **不要** 再叠一条 Inspire 标题（该页无 Inspire 正文）。
 
-**Artistic theme** (`ResumeArtisticContent.vue`): `WORK_COVER` / `WORK_CHUNK` 控制经历分页；当前 `WORK_CHUNK = 2` 以适配固定 A4 页高。续改内容量时优先调 chunk 或内层字号，**不要**去掉 `.page-artistic` 的固定高。
-
 ### PDF Export
 
 `scripts/export-pdf.mjs`:
@@ -94,9 +88,9 @@ Theme IDs and labels are defined in `src/data/resume-themes.ts`. Legacy `spectru
 4. Switches to `print` media emulation
 5. Calls `page.pdf()` with A4, `preferCSSPageSize: true`, zero margins
 
-The `@media print` rules in both `ResumeView.vue` and `ResumeArtisticContent.vue` handle:
+The `@media print` rules in `ResumeView.vue` (shared pages) and `ResumeModularContent.vue` (简线) handle:
 - Removing box-shadows on pages (flat paper)
-- Classic/folio: `min-height: 296mm` on `.page`; Artistic: **fixed** `height/min/max: 296mm` on `.page-artistic`
+- Classic/folio: `min-height: 296mm` on `.page`; modular: **fixed** `height/min/max: 296mm` on `.page-modular`
 - Hiding the theme switcher bar
 - Removing link underlines
 

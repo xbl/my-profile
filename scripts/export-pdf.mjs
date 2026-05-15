@@ -17,8 +17,8 @@ const outFile = join(outDir, '谢保龙简历-web.pdf')
 const PORT = 4179
 const BASE = `http://127.0.0.1:${PORT}`
 const themeRaw = (process.env.RESUME_THEME ?? 'classic').trim().toLowerCase()
-const normalized = themeRaw === 'spectrum' ? 'folio' : themeRaw
-const resumeTheme = ['classic', 'executive', 'folio', 'artistic', 'modular'].includes(normalized)
+const normalized = themeRaw === 'spectrum' ? 'folio' : themeRaw === 'artistic' ? 'classic' : themeRaw
+const resumeTheme = ['classic', 'executive', 'folio', 'modular'].includes(normalized)
   ? normalized
   : 'classic'
 
