@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { resume } from "@/data/resume";
-import type { ResumeContactItem, ResumeExperience } from "@/types/resume";
+import { isInfluenceGroup, type ResumeContactItem, type ResumeExperience } from "@/types/resume";
 
 defineOptions({ name: "ResumeArtisticContent" });
 
@@ -149,7 +149,16 @@ const workChunks = computed(() => {
     <section class="artistic-influence-full">
       <h2 class="artistic-bar artistic-bar--full">影响力</h2>
       <ul class="artistic-influence-list">
-        <li v-for="(line, ii) in resume.influenceItems" :key="'inf-' + ii">{{ line }}</li>
+        <li v-for="(entry, ii) in resume.influenceItems" :key="'inf-' + ii">
+          <template v-if="isInfluenceGroup(entry)">
+            <div class="artistic-influence-group-head">{{ entry.groupTitle }}</div>
+            <ul class="artistic-influence-sublist">
+              <li v-for="(sub, si) in entry.items" :key="'inf-' + ii + '-s' + si">{{ sub }}</li>
+            </ul>
+            <p v-if="entry.footnote" class="artistic-influence-footnote">{{ entry.footnote }}</p>
+          </template>
+          <template v-else>{{ entry }}</template>
+        </li>
       </ul>
     </section>
     </div>
@@ -421,6 +430,58 @@ const workChunks = computed(() => {
 
 .artistic-influence-list li:last-child {
   margin-bottom: 0;
+}
+
+.artistic-influence-group-head {
+  margin: 0 0 2mm;
+  font-size: 10.2pt;
+  font-weight: 800;
+  line-height: 1.45;
+  color: #0a0a0a;
+}
+
+.artistic-influence-sublist {
+  margin: 0 0 1.5mm;
+  padding: 0;
+  list-style: none;
+}
+
+.artistic-influence-sublist li {
+  position: relative;
+  margin: 0 0 1.8mm;
+  padding: 0 0 0 3.8mm;
+  font-size: 9.8pt;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: justify;
+  color: #333;
+}
+
+.artistic-influence-sublist li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  transform: translateY(-50%);
+  width: min(1.6px, 0.22em);
+  height: min(1.6px, 0.22em);
+  max-width: 0.38em;
+  max-height: 0.38em;
+  border-radius: 0.5px;
+  background: color-mix(in srgb, #0a0a0a 88%, #6b7280);
+  box-shadow: none;
+}
+
+.artistic-influence-sublist li:last-child {
+  margin-bottom: 0;
+}
+
+.artistic-influence-footnote {
+  margin: 1.5mm 0 0;
+  font-size: 9.2pt;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #6b7280;
 }
 
 .artistic-about {

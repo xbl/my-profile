@@ -113,9 +113,10 @@
 }
 
 .resume-shell.theme-modular .skill-block li::before,
-.resume-shell.theme-modular .influence-block li::before,
+.resume-shell.theme-modular .influence-block > ul > li::before,
 .resume-shell.theme-modular .experience-item li::before {
   content: "";
+  position: absolute;
   top: 0.52em;
   left: 0.8mm;
   width: 1.5mm;
@@ -125,8 +126,24 @@
   font-weight: 400;
 }
 
-.resume-shell.theme-modular .influence-block li::before {
+.resume-shell.theme-modular .influence-block > ul > li::before {
   background: var(--resume-purple);
+}
+
+.resume-shell.theme-modular .influence-block .influence-sublist li::before {
+  content: "";
+  position: absolute;
+  top: 0.55em;
+  left: 0.5mm;
+  transform: translateY(-50%);
+  width: min(0.95mm, 0.22em);
+  height: min(0.95mm, 0.22em);
+  max-width: 0.38em;
+  max-height: 0.38em;
+  border-radius: 0.18mm;
+  background: color-mix(in srgb, var(--resume-green) 78%, var(--resume-teal));
+  font-weight: 400;
+  box-shadow: none;
 }
 
 .resume-shell.theme-modular .page-header {

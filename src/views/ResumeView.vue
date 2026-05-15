@@ -10,6 +10,7 @@ import {
 import ResumeArtisticContent from "@/components/resume/ResumeArtisticContent.vue";
 import { RESUME_THEME_SHELLS } from "@/components/resume/themes/themeShells";
 import { fallbackChunks, packWorkExperienceChunks } from "@/utils/packResumeWorkChunks";
+import { isInfluenceGroup } from "@/types/resume";
 
 const themeId = ref<ResumeThemeId>("classic");
 
@@ -262,7 +263,16 @@ onBeforeUnmount(() => {
             影响力
           </h2>
           <ul>
-            <li v-for="(item, ii) in resume.influenceItems" :key="'inf-' + ii">{{ item }}</li>
+            <li v-for="(entry, ii) in resume.influenceItems" :key="'inf-' + ii">
+              <template v-if="isInfluenceGroup(entry)">
+                <div class="influence-group-head">{{ entry.groupTitle }}</div>
+                <ul class="influence-sublist">
+                  <li v-for="(sub, si) in entry.items" :key="'inf-' + ii + '-s' + si">{{ sub }}</li>
+                </ul>
+                <p v-if="entry.footnote" class="influence-footnote">{{ entry.footnote }}</p>
+              </template>
+              <template v-else>{{ entry }}</template>
+            </li>
           </ul>
         </section>
       </main>
@@ -274,7 +284,16 @@ onBeforeUnmount(() => {
           影响力
         </h2>
         <ul>
-          <li v-for="(item, ii) in resume.influenceItems" :key="'inf-' + ii">{{ item }}</li>
+            <li v-for="(entry, ii) in resume.influenceItems" :key="'inf-' + ii">
+              <template v-if="isInfluenceGroup(entry)">
+                <div class="influence-group-head">{{ entry.groupTitle }}</div>
+                <ul class="influence-sublist">
+                  <li v-for="(sub, si) in entry.items" :key="'inf-' + ii + '-s' + si">{{ sub }}</li>
+                </ul>
+                <p v-if="entry.footnote" class="influence-footnote">{{ entry.footnote }}</p>
+              </template>
+              <template v-else>{{ entry }}</template>
+            </li>
         </ul>
       </section>
 
@@ -727,7 +746,7 @@ onBeforeUnmount(() => {
 }
 
 .skill-block li::before,
-.influence-block li::before,
+.influence-block > ul > li::before,
 .experience-item li::before {
   content: "•";
   position: absolute;
@@ -737,15 +756,65 @@ onBeforeUnmount(() => {
   font-weight: 900;
 }
 
+.influence-block > ul > li::before {
+  font-size: min(10.2pt, 0.92em);
+  line-height: 1;
+  top: 0.08em;
+}
+
 .skill-block li,
-.influence-block li {
+.influence-block li,
+.experience-item li {
   margin-bottom: 1.8mm;
   font-size: 11.4pt;
   line-height: 1.25;
 }
 
-.influence-block li {
+.influence-block > ul > li {
   white-space: pre-line;
+}
+
+.influence-group-head {
+  margin: 0 0 1.6mm;
+  font-weight: 700;
+}
+
+.influence-sublist {
+  margin: 0 0 1mm;
+  padding: 0;
+  list-style: none;
+}
+
+.influence-sublist li {
+  position: relative;
+  padding-left: 4.2mm;
+  margin-bottom: 1.1mm;
+  font-size: 10.7pt;
+  line-height: 1.32;
+  font-weight: 500;
+}
+
+.influence-sublist li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  transform: translateY(-50%);
+  width: min(1.15mm, 0.26em);
+  height: min(1.15mm, 0.26em);
+  max-width: 0.42em;
+  max-height: 0.42em;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--resume-green) 88%, var(--resume-teal));
+  box-shadow: none;
+}
+
+.influence-footnote {
+  margin: 1.2mm 0 0;
+  font-size: 10.2pt;
+  line-height: 1.3;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--resume-ink) 70%, transparent);
 }
 
 .skill-block li:first-child,

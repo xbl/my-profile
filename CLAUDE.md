@@ -97,7 +97,7 @@ The `@media print` rules in both `ResumeView.vue` and `ResumeArtisticContent.vue
 
 ### Key TypeScript Types (`src/types/resume.ts`)
 
-`ResumeData` contains: `name`, `headlineLines`, `summaryLines`, `contactItems` (with optional `href`), `skillGroups`, `influenceItems`, `workExperiences`/`earlyExperiences` (title, period, role, result, bullets), `certificateImages`, `portraitSrc`/`portraitAlt`.
+`ResumeData` contains: `name`, `headlineLines`, `summaryLines`, `contactItems` (with optional `href`), `skillGroups`, `influenceItems` (`string` 或 `InfluenceGroup` 嵌套子列表), `workExperiences`/`earlyExperiences` (title, period, role, result, bullets), `certificateImages`, `portraitSrc`/`portraitAlt`.
 
 ### Static Assets
 
