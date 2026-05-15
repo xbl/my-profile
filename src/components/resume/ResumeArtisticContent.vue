@@ -149,7 +149,7 @@ const workChunks = computed(() => {
     <section class="artistic-influence-full">
       <h2 class="artistic-bar artistic-bar--full">影响力</h2>
       <ul class="artistic-influence-list">
-        <li v-for="line in resume.influenceItems" :key="line">{{ line }}</li>
+        <li v-for="(line, ii) in resume.influenceItems" :key="'inf-' + ii">{{ line }}</li>
       </ul>
     </section>
     </div>
@@ -416,6 +416,7 @@ const workChunks = computed(() => {
   line-height: 1.55;
   text-align: justify;
   color: #1a1a1a;
+  white-space: pre-line;
 }
 
 .artistic-influence-list li:last-child {

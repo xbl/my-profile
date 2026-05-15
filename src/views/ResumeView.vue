@@ -262,7 +262,7 @@ onBeforeUnmount(() => {
             影响力
           </h2>
           <ul>
-            <li v-for="item in resume.influenceItems" :key="item">{{ item }}</li>
+            <li v-for="(item, ii) in resume.influenceItems" :key="'inf-' + ii">{{ item }}</li>
           </ul>
         </section>
       </main>
@@ -274,7 +274,7 @@ onBeforeUnmount(() => {
           影响力
         </h2>
         <ul>
-          <li v-for="item in resume.influenceItems" :key="item">{{ item }}</li>
+          <li v-for="(item, ii) in resume.influenceItems" :key="'inf-' + ii">{{ item }}</li>
         </ul>
       </section>
 
@@ -742,6 +742,10 @@ onBeforeUnmount(() => {
   margin-bottom: 1.8mm;
   font-size: 11.4pt;
   line-height: 1.25;
+}
+
+.influence-block li {
+  white-space: pre-line;
 }
 
 .skill-block li:first-child,

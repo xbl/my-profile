@@ -33,6 +33,7 @@ export type ResumeData = {
   summaryLines: string[]
   contactItems: ResumeContactItem[]
   skillGroups: ResumeSkillGroup[]
+  /** 影响力列表；单项可含 `\n`，各主题下按行展示（`white-space: pre-line`） */
   influenceItems: string[]
   workSectionTitle: string
   workExperiences: ResumeExperience[]

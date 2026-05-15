@@ -51,7 +51,7 @@ export const resume: ResumeData = {
   influenceItems: [
     '中国电子学会《BizDevSecOps 标准》核心专家成员',
     '中国信息通信研究院《研发运营一体化（DevOps）能力成熟度模型 第 2 部分：敏捷开发管理》标准及评估指南制定专家',
-    '公开演讲：QECon《平台工程 2.0：面向 AI 构建下一代 DevOps 平台》、腾讯云 TVP《大模型时代的新质生产力》、DevOpsDays《BizDevSecOps 行业生态建设和发展趋势》、Qcon《探索软件开发新工序：LLM+赋能研发效能提升》、DevOpsDays《金融企业的 DevOps 规模化转型》等',
+    '公开演讲：\nQECon《平台工程 2.0：面向 AI 构建下一代 DevOps 平台》\n腾讯云 TVP《大模型时代的新质生产力》\nDevOpsDays《BizDevSecOps 行业生态建设和发展趋势》\nQcon《探索软件开发新工序：LLM+赋能研发效能提升》\nDevOpsDays《金融企业的 DevOps 规模化转型》\n（以上为部分公开演讲）',
   ],
   workSectionTitle: 'Inspire（前 Thoughtworks 中国区）工作经历',
   workExperiences: [
